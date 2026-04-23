@@ -1,7 +1,6 @@
 package minitennis;
 
 import java.awt.*;
-import java.util.Random;
 
 public class Obstacle {
 
@@ -17,12 +16,19 @@ public class Obstacle {
     }
 
     public void paint(Graphics2D g) {
+
+        if (destroyed) return;
+
         g.setColor(Color.RED);
-        g.fillRect(x, y, w, h);
+        g.fillRoundRect(x, y, w, h, 8, 8);
     }
 
     public Rectangle getBounds() {
         return new Rectangle(x, y, w, h);
+    }
+
+    public boolean isDestroyed() {
+        return destroyed;
     }
 
     public void checkCollision(Ball ball) {
@@ -44,32 +50,22 @@ public class Obstacle {
 
     public static Obstacle[] createLevel(int level, Game game) {
 
-        if (level == 1) {
-            return createWall(0, game);
-        }
+        int cols = 5;
+        int rows = level + 1;
 
-        int count = level * 5;
-        Obstacle[] obs = new Obstacle[count];
+        Obstacle[] obs = new Obstacle[cols * rows];
 
-        Random r = new Random();
+        int index = 0;
 
-        for (int i = 0; i < count; i++) {
-            obs[i] = new Obstacle(
-                    20 + (i % 6) * 45,
-                    60 + (i / 6) * 30,
-                    game
-            );
-        }
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
 
-        return obs;
-    }
-
-    // nivel 1 (simple)
-    static Obstacle[] createWall(int level, Game game) {
-        Obstacle[] obs = new Obstacle[6];
-
-        for (int i = 0; i < obs.length; i++) {
-            obs[i] = new Obstacle(20 + i * 45, 80, game);
+                obs[index++] = new Obstacle(
+                        30 + c * 50,
+                        60 + r * 30,
+                        game
+                );
+            }
         }
 
         return obs;

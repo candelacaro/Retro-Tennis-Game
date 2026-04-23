@@ -15,15 +15,18 @@ public class Paddle {
     }
 
     public void move() {
+
         x += xa;
 
+        int width = Math.max(game.getWidth(), 300);
+
         if (x < 0) x = 0;
-        if (x > game.getWidth() - 60)
-            x = game.getWidth() - 60;
+        if (x > width - 60) x = width - 60;
     }
 
     public void paint(Graphics2D g) {
-        g.fillRect(x, 330, 60, 10);
+        g.setColor(Color.GREEN);
+        g.fillRoundRect(x, 330, 60, 10, 10, 10);
     }
 
     public Rectangle getBounds() {
@@ -31,10 +34,9 @@ public class Paddle {
     }
 
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_LEFT)
-            xa = -5;
-        if (e.getKeyCode() == KeyEvent.VK_RIGHT)
-            xa = 5;
+
+        if (e.getKeyCode() == KeyEvent.VK_LEFT) xa = -6;
+        if (e.getKeyCode() == KeyEvent.VK_RIGHT) xa = 6;
     }
 
     public void keyReleased(KeyEvent e) {

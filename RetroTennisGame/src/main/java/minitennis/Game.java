@@ -3,46 +3,39 @@ package minitennis;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.awt.Window;
 
 public class Game extends JPanel {
 
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	Ball ball;
+    private static final long serialVersionUID = 1L;
+
+    Ball ball;
     Paddle paddle;
     Obstacle[] obstacles;
+    Particle[] particles = new Particle[150];
 
-    int speed = 1;
+    int score = 0;
+    int ballSpeed = 3;
     int level;
     int lives = 3;
-    int score = 0;
 
     boolean running = true;
-    boolean finished = false;
-
-    List<Particle> particles = new ArrayList<>();
 
     public Game(int level) {
+
         this.level = level;
+
+        setFocusable(true);
+        setBackground(new Color(20, 20, 30));
 
         ball = new Ball(this);
         paddle = new Paddle(this);
         obstacles = Obstacle.createLevel(level, this);
 
-        setFocusable(true);
-
         addKeyListener(new KeyAdapter() {
-            @Override
             public void keyPressed(KeyEvent e) {
                 paddle.keyPressed(e);
             }
 
-            @Override
             public void keyReleased(KeyEvent e) {
                 paddle.keyReleased(e);
             }
@@ -50,70 +43,39 @@ public class Game extends JPanel {
 
         Sound.BACK.loop();
 
-        new Thread(this::gameLoop).start();
+        // ✔ GAME LOOP CORRECTO (SIN THREAD)
+        Timer timer = new Timer(10, e -> gameLoop());
+        timer.start();
     }
 
-    // 🔁 LOOP PRINCIPAL
     void gameLoop() {
-        while (running) {
-            move();
-            repaint();
 
-            try {
-                Thread.sleep(10);
-            } catch (Exception ignored) {}
-        }
+        if (!running) return;
+
+        move();
+        updateParticles();
+        repaint();
     }
 
-    // 🎮 MOVIMIENTO GENERAL
     public void move() {
+
         ball.move();
         paddle.move();
 
+        boolean anyLeft = false;
+
         for (Obstacle o : obstacles) {
-            o.checkCollision(ball);
-        }
-
-        // partículas
-        for (int i = 0; i < particles.size(); i++) {
-            particles.get(i).update();
-            if (particles.get(i).isDead()) {
-                particles.remove(i);
-                i--;
+            if (!o.isDestroyed()) {
+                o.checkCollision(ball);
+                anyLeft = true;
             }
         }
 
-        // 🏁 comprobar nivel
-        if (isLevelCompleted()) {
-            levelCompleted();
-        }
+        if (!anyLeft) levelComplete();
     }
 
-    // 🧱 NIVEL COMPLETADO
-    public void levelCompleted() {
-        if (finished) return;
-        finished = true;
-
-        running = false;
-
-        Sound.BACK.stop();
-
-        JOptionPane.showMessageDialog(this,
-                "Nivel " + level + " completado!\nScore: " + score);
-
-        // ✔ RETORNO SEGURO AL MENU
-        SwingUtilities.invokeLater(() -> {
-            Window w = SwingUtilities.getWindowAncestor(this);
-            if (w != null) {
-                w.dispose();
-            }
-
-            new Menu();
-        });
-    }
-
-    // 💀 VIDAS
     public void loseLife() {
+
         lives--;
 
         if (lives <= 0) {
@@ -123,71 +85,110 @@ public class Game extends JPanel {
         }
     }
 
-    // ☠ GAME OVER
+    public void addScore(int points) {
+        score += points;
+    }
+
+    public void addParticles(int x, int y) {
+
+        for (int i = 0; i < particles.length; i++) {
+            if (particles[i] == null) {
+                particles[i] = new Particle(x, y);
+                break;
+            }
+        }
+    }
+
+    private void updateParticles() {
+
+        for (int i = 0; i < particles.length; i++) {
+            if (particles[i] != null) {
+                particles[i].update();
+                if (particles[i].isDead()) particles[i] = null;
+            }
+        }
+    }
+
     public void gameOver() {
+
         running = false;
 
         Sound.BACK.stop();
         Sound.GAMEOVER.play();
 
         JOptionPane.showMessageDialog(this,
-                "Game Over\nScore: " + score);
+                Lang.get("game_over") + "\nScore: " + score);
 
-        SwingUtilities.invokeLater(() -> {
-            Window w = SwingUtilities.getWindowAncestor(this);
-            if (w != null) {
-                w.dispose();
-            }
-
-            new Menu();
-        });
+        SwingUtilities.getWindowAncestor(this).dispose();
+        new Menu();
     }
 
-    // 🧮 NIVEL COMPLETADO CHECK
-    public boolean isLevelCompleted() {
-        for (Obstacle o : obstacles) {
-            if (!o.destroyed) return false;
-        }
-        return true;
+    public void levelComplete() {
+
+        running = false;
+
+        Sound.BACK.stop();
+
+        JOptionPane.showMessageDialog(this,
+                Lang.get("level_completed") + " " + level);
+
+        SwingUtilities.getWindowAncestor(this).dispose();
+        new LevelSelect();
     }
 
-    // 🧮 SCORE
-    public void addScore(int value) {
-        score += value;
-    }
-
-    // 💥 PARTICULAS
-    public void addParticles(int x, int y) {
-        for (int i = 0; i < 10; i++) {
-            particles.add(new Particle(x, y));
-        }
-    }
-
-    // 🎨 DIBUJO
     @Override
     public void paintComponent(Graphics g) {
-        super.paintComponent(g);
 
-        if (!running) return;
+        super.paintComponent(g);
 
         Graphics2D g2 = (Graphics2D) g;
 
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
+
+        // 🎮 ENTIDADES
         ball.paint(g2);
         paddle.paint(g2);
 
-        for (Obstacle o : obstacles) {
-            if (!o.destroyed) {
-                o.paint(g2);
-            }
-        }
+        for (Obstacle o : obstacles) o.paint(g2);
+        for (Particle p : particles) if (p != null) p.paint(g2);
 
-        for (Particle p : particles) {
-            p.draw(g2);
-        }
+        drawHUD(g2);
+    }
 
-        g2.setColor(Color.BLACK);
-        g2.drawString("Score: " + score, 10, 20);
-        g2.drawString("Lives: " + lives, 200, 20);
-        g2.drawString("Level: " + level, 120, 20);
+    private void drawHUD(Graphics2D g2) {
+
+        // fondo HUD
+        g2.setColor(new Color(0, 0, 0, 160));
+        g2.fillRoundRect(10, 10, getWidth() - 20, 40, 20, 20);
+
+        g2.setFont(new Font("Consolas", Font.BOLD, 14));
+
+        drawText(g2, "Score: " + score, 25, 35, Color.CYAN);
+        drawText(g2, "Level: " + level, getWidth()/2 - 30, 35, Color.ORANGE);
+
+        drawHearts(g2);
+    }
+
+    private void drawText(Graphics2D g, String text, int x, int y, Color color) {
+
+        g.setColor(new Color(0,0,0,120));
+        g.drawString(text, x + 1, y + 1);
+
+        g.setColor(color);
+        g.drawString(text, x, y);
+    }
+
+    private void drawHearts(Graphics2D g) {
+
+        int x = getWidth() - 120;
+
+        for (int i = 0; i < 3; i++) {
+
+            if (i < lives) g.setColor(Color.RED);
+            else g.setColor(new Color(80,80,80));
+
+            g.fillOval(x + i * 20, 20, 12, 12);
+        }
     }
 }

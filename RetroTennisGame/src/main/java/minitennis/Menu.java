@@ -11,16 +11,17 @@ public class Menu extends JFrame {
 	private static final long serialVersionUID = 1L;
 
 	public Menu() {
-        setTitle("Mini Tennis - Menu Principal");
+
+        setTitle(Lang.get("title"));
         setSize(300, 400);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        setLayout(new GridLayout(3, 1));
+        setLayout(new GridLayout(3,1));
 
-        JButton play = new JButton("Jugar");
-        JButton rules = new JButton("Reglas");
-        JButton exit = new JButton("Salir");
+        JButton play = new JButton(Lang.get("play"));
+        JButton rules = new JButton(Lang.get("rules_btn"));
+        JButton exit = new JButton(Lang.get("exit"));
 
         add(play);
         add(rules);
@@ -28,17 +29,11 @@ public class Menu extends JFrame {
 
         play.addActionListener(e -> {
             dispose();
-            new LevelMenu();
+            new LanguageMenu();
         });
 
-        rules.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this,
-                    "Reglas:\n\n" +
-                    "- Usa flechas izquierda/derecha\n" +
-                    "- No dejes caer la pelota\n" +
-                    "- Cada rebote aumenta velocidad\n" +
-                    "- Evita obstáculos en niveles altos\n");
-        });
+        rules.addActionListener(e ->
+                JOptionPane.showMessageDialog(this, Lang.get("rules")));
 
         exit.addActionListener(e -> System.exit(0));
 
