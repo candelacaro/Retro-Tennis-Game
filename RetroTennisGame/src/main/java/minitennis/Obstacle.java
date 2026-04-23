@@ -6,6 +6,8 @@ import java.util.Random;
 public class Obstacle {
 
     int x, y, w = 40, h = 20;
+    boolean destroyed = false;
+
     Game game;
 
     public Obstacle(int x, int y, Game game) {
@@ -25,15 +27,16 @@ public class Obstacle {
 
     public void checkCollision(Ball ball) {
 
+        if (destroyed) return;
+
         if (getBounds().intersects(ball.getBounds())) {
+
+            destroyed = true;
 
             ball.ya = -ball.ya;
 
-            if (ball.y < y) {
-                ball.y = y - 30;
-            } else {
-                ball.y = y + h + 1;
-            }
+            game.addScore(10);
+            game.addParticles(x, y);
 
             Sound.BALL.play();
         }
@@ -42,25 +45,31 @@ public class Obstacle {
     public static Obstacle[] createLevel(int level, Game game) {
 
         if (level == 1) {
-            return new Obstacle[0]; 
+            return createWall(0, game);
         }
 
-        int count;
-
-        if (level == 2) count = 3;
-        else if (level == 3) count = 6;
-        else count = 12; 
-
+        int count = level * 5;
         Obstacle[] obs = new Obstacle[count];
+
         Random r = new Random();
 
         for (int i = 0; i < count; i++) {
-
             obs[i] = new Obstacle(
-                    30 + r.nextInt(200),
-                    60 + r.nextInt(200),
+                    20 + (i % 6) * 45,
+                    60 + (i / 6) * 30,
                     game
             );
+        }
+
+        return obs;
+    }
+
+    // nivel 1 (simple)
+    static Obstacle[] createWall(int level, Game game) {
+        Obstacle[] obs = new Obstacle[6];
+
+        for (int i = 0; i < obs.length; i++) {
+            obs[i] = new Obstacle(20 + i * 45, 80, game);
         }
 
         return obs;
