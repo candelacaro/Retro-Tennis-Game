@@ -1,194 +1,146 @@
 package minitennis;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionAdapter;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+
 
 public class Game extends JPanel {
-
-    private static final long serialVersionUID = 1L;
-
-    Ball ball;
-    Paddle paddle;
-    Obstacle[] obstacles;
-    Particle[] particles = new Particle[150];
-
-    int score = 0;
-    int ballSpeed = 3;
-    int level;
-    int lives = 3;
-
-    boolean running = true;
-
-    public Game(int level) {
-
-        this.level = level;
-
-        setFocusable(true);
-        setBackground(new Color(20, 20, 30));
-
-        ball = new Ball(this);
-        paddle = new Paddle(this);
-        obstacles = Obstacle.createLevel(level, this);
-
-        addKeyListener(new KeyAdapter() {
-            public void keyPressed(KeyEvent e) {
-                paddle.keyPressed(e);
-            }
-
-            public void keyReleased(KeyEvent e) {
-                paddle.keyReleased(e);
-            }
-        });
-
-        Sound.BACK.loop();
-
-        // ✔ GAME LOOP CORRECTO (SIN THREAD)
-        Timer timer = new Timer(10, e -> gameLoop());
-        timer.start();
-    }
-
-    void gameLoop() {
-
-        if (!running) return;
-
-        move();
-        updateParticles();
-        repaint();
-    }
-
-    public void move() {
-
-        ball.move();
-        paddle.move();
-
-        boolean anyLeft = false;
-
-        for (Obstacle o : obstacles) {
-            if (!o.isDestroyed()) {
-                o.checkCollision(ball);
-                anyLeft = true;
-            }
-        }
-
-        if (!anyLeft) levelComplete();
-    }
-
-    public void loseLife() {
-
-        lives--;
-
-        if (lives <= 0) {
-            gameOver();
-        } else {
-            ball.reset();
-        }
-    }
-
-    public void addScore(int points) {
-        score += points;
-    }
-
-    public void addParticles(int x, int y) {
-
-        for (int i = 0; i < particles.length; i++) {
-            if (particles[i] == null) {
-                particles[i] = new Particle(x, y);
-                break;
-            }
-        }
-    }
-
-    private void updateParticles() {
-
-        for (int i = 0; i < particles.length; i++) {
-            if (particles[i] != null) {
-                particles[i].update();
-                if (particles[i].isDead()) particles[i] = null;
-            }
-        }
-    }
-
-    public void gameOver() {
-
-        running = false;
-
-        Sound.BACK.stop();
-        Sound.GAMEOVER.play();
-
-        JOptionPane.showMessageDialog(this,
-                Lang.get("game_over") + "\nScore: " + score);
-
-        SwingUtilities.getWindowAncestor(this).dispose();
-        new Menu();
-    }
-
-    public void levelComplete() {
-
-        running = false;
-
-        Sound.BACK.stop();
-
-        JOptionPane.showMessageDialog(this,
-                Lang.get("level_completed") + " " + level);
-
-        SwingUtilities.getWindowAncestor(this).dispose();
-        new LevelSelect();
-    }
-
-    @Override
-    public void paintComponent(Graphics g) {
-
-        super.paintComponent(g);
-
-        Graphics2D g2 = (Graphics2D) g;
-
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON);
-
-        // 🎮 ENTIDADES
-        ball.paint(g2);
-        paddle.paint(g2);
-
-        for (Obstacle o : obstacles) o.paint(g2);
-        for (Particle p : particles) if (p != null) p.paint(g2);
-
-        drawHUD(g2);
-    }
-
-    private void drawHUD(Graphics2D g2) {
-
-        // fondo HUD
-        g2.setColor(new Color(0, 0, 0, 160));
-        g2.fillRoundRect(10, 10, getWidth() - 20, 40, 20, 20);
-
-        g2.setFont(new Font("Consolas", Font.BOLD, 14));
-
-        drawText(g2, "Score: " + score, 25, 35, Color.CYAN);
-        drawText(g2, "Level: " + level, getWidth()/2 - 30, 35, Color.ORANGE);
-
-        drawHearts(g2);
-    }
-
-    private void drawText(Graphics2D g, String text, int x, int y, Color color) {
-
-        g.setColor(new Color(0,0,0,120));
-        g.drawString(text, x + 1, y + 1);
-
-        g.setColor(color);
-        g.drawString(text, x, y);
-    }
-
-    private void drawHearts(Graphics2D g) {
-
-        int x = getWidth() - 120;
-
-        for (int i = 0; i < 3; i++) {
-
-            if (i < lives) g.setColor(Color.RED);
-            else g.setColor(new Color(80,80,80));
-
-            g.fillOval(x + i * 20, 20, 12, 12);
-        }
-    }
+	
+	//Instància de la bola
+	Ball ball = new Ball(this);
+	
+	//Instància de la raqueta
+	Racquet racquet = new Racquet(this);
+	
+	
+	/**
+	 * Constructors de la classe. Configura els listeners per a les entrades 
+     * de teclat i rató, i estableix el focus del component.
+	 */
+	public Game() {
+		
+		//Listener de teclat: Captura quan l'usuari prem una tecla.
+		addKeyListener(new KeyAdapter(){
+			
+			/**
+			 * 
+			 * @param e
+			 */
+			@Override
+			public void keyPressed (KeyEvent e) {
+				//Delegació d'esdeveniments de teclat a la classe Racquet
+				racquet.keyPressed(e);
+			}
+			
+			/**
+			 * 
+			 * @param e
+			 */
+			public void keyReleased(KeyEvent e) {
+				racquet.keyReleased(e);
+			}
+		});
+		
+		//Escoltador de moviment de rató
+		addMouseMotionListener(new MouseMotionAdapter() {
+			
+			/**
+			 * 
+			 * @param e
+			 */
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				//Sincronització de la X del ratolí amb la raqueta
+				racquet.setMouse(e.getX());
+			}
+		});
+		
+		//Requerit per capturar esdeveniments de teclat
+		setFocusable(true);
+	}
+	
+	/**
+	 * Mètode privat que coordina l'actualització de la lògica del moviment de tots 
+     * els components del joc (bola i raqueta)
+	 */
+	private void move() {
+	    /*
+	     * Estructura condicional on es comprova si l'altura i l'amplada és major a 0
+	     * (a la superfície de la consola) i d'aquesta manera es mou la bola i la raqueta
+	     */
+	    if (getWidth() > 0 && getHeight() > 0) {
+	        ball.move();
+	        racquet.move();
+	    }
+	}
+	
+	/**
+	 * Sobreescriptura del mètode de renderitzat de Swing per dibuixar els frames.
+	 */
+	@Override
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		
+		//Càsting per accedir als gràfics 2d
+		Graphics2D g2d = (Graphics2D) g;
+		
+		/**
+		 * Filtre de qualitat gràfica que fa que les figures geomètriques (cercles i rectangles) 
+		 * es vegin suaus en lloc de pixelades.
+		 * 
+		 * RenderingHints: 
+		 * KEY_ANTIALIASING: 
+		 * VALUE_ANTIALIAS_ON: 
+		 */
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		
+		ball.paint(g2d);
+		racquet.paint(g2d);
+	}
+	
+	public void gameOver() {
+		JOptionPane.showMessageDialog(this, "GAME-OVER", null, JOptionPane.YES_NO_OPTION);
+		System.exit(0);
+	}
+	
+	public static void main (String[] args) {
+		JFrame frame = new JFrame("Mini Tennis");
+		Game game = new Game();
+		
+		final int SIZE_WIDTH_CONSOLE = 300;
+		final int SIZE_HIGHT_CONSOLE = 400;
+		final int PAUSA_MILISEGONS = 10;
+		
+		frame.add(game);
+		frame.setSize(SIZE_WIDTH_CONSOLE, SIZE_HIGHT_CONSOLE);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setLocationRelativeTo(null);
+		frame.setVisible(true);
+		
+		
+		while(true) {
+			game.move();
+			game.repaint();
+			
+			/*
+			 * Control de frames: try-catch, per intentar que la ball
+			 * tingui el millor flux possible, ni massa ràpid ni massa lent
+			 */
+			try {
+				//
+				Thread.sleep(PAUSA_MILISEGONS);
+			} catch(InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 }
