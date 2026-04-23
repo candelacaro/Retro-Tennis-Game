@@ -5,37 +5,30 @@ import java.awt.*;
 
 public class LevelMenu extends JFrame {
 
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public LevelMenu() {
+    public LevelMenu() {
 
-        setTitle("Seleccionar Nivel");
+        setTitle(Lang.get("level_select"));
         setSize(300, 400);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         setLayout(new GridLayout(5, 1));
 
-        JLabel title = new JLabel("ELIGE NIVEL", SwingConstants.CENTER);
-
-        JButton b1 = new JButton("Nivel 1");
-        JButton b2 = new JButton("Nivel 2");
-        JButton b3 = new JButton("Nivel 3");
-        JButton b4 = new JButton("Nivel 4");
-
+        JLabel title = new JLabel(Lang.get("level_select"), SwingConstants.CENTER);
         add(title);
-        add(b1);
-        add(b2);
-        add(b3);
-        add(b4);
 
-        b1.addActionListener(e -> startGame(1));
-        b2.addActionListener(e -> startGame(2));
-        b3.addActionListener(e -> startGame(3));
-        b4.addActionListener(e -> startGame(4));
+        for (int i = 1; i <= 4; i++) {
+
+            int level = i;
+
+            JButton btn = new JButton(Lang.get("level") + " " + i);
+
+            btn.addActionListener(e -> startGame(level));
+
+            add(btn);
+        }
 
         setVisible(true);
     }
@@ -44,14 +37,16 @@ public class LevelMenu extends JFrame {
 
         dispose();
 
-        JFrame frame = new JFrame("Mini Tennis - Nivel " + level);
+        JFrame frame = new JFrame("Mini Tennis - Level " + level);
 
         Game game = new Game(level);
 
-        frame.add(game);
+        frame.setContentPane(game);
         frame.setSize(300, 400);
         frame.setLocationRelativeTo(null);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
+
+        game.requestFocusInWindow();
     }
 }

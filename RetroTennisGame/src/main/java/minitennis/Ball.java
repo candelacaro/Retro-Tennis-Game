@@ -5,10 +5,10 @@ import java.awt.*;
 public class Ball {
 
     int x = 100, y = 100;
-    int xa = 1, ya = 1;
+    int xa = 2, ya = 2;
 
     Game game;
-    static final int SIZE = 30;
+    static final int SIZE = 20;
 
     public Ball(Game game) {
         this.game = game;
@@ -16,24 +16,18 @@ public class Ball {
 
     public void move() {
 
-        if (x + xa < 0 || x + xa > game.getWidth() - SIZE)
-            xa = -xa;
+        int width = Math.max(game.getWidth(), 300);
+        int height = Math.max(game.getHeight(), 400);
 
-        if (y + ya < 0)
-            ya = -ya;
+        if (x + xa < 0 || x + xa > width - SIZE) xa = -xa;
+        if (y + ya < 0) ya = -ya;
 
-        if (game.getHeight() > 0 && y + ya > game.getHeight() - SIZE) {
+        if (y + ya > height - SIZE) {
             game.loseLife();
         }
 
-        Rectangle ballRect = getBounds();
-
-        if (ballRect.intersects(game.paddle.getBounds())) {
-            ya = -game.speed;
-            y = game.paddle.getBounds().y - SIZE;
-
-            game.speed++;
-
+        if (getBounds().intersects(game.paddle.getBounds())) {
+            ya = -Math.abs(ya);
             Sound.BALL.play();
         }
 
@@ -46,14 +40,14 @@ public class Ball {
     }
 
     public void paint(Graphics2D g) {
+        g.setColor(Color.WHITE);
         g.fillOval(x, y, SIZE, SIZE);
     }
 
-    // ✔ AHORA SÍ FUNCIONA
     public void reset() {
         x = 100;
         y = 100;
-        xa = 1;
-        ya = 1;
+        xa = 2;
+        ya = 2;
     }
 }
