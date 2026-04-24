@@ -17,119 +17,126 @@ import javax.swing.JPanel;
 
 public class Game extends JPanel {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	Ball ball = new Ball(this);
-	Racquet racquet = new Racquet(this);
-	Sound sonido = new Sound(); //Crea objeto sonido
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    Ball ball = new Ball(this);
+    Racquet racquet = new Racquet(this);
+    Sound sonido = new Sound(); //Crea objeto sonido
 
-	List<Obstacle> obstacles = new ArrayList<>();
+    List<Obstacle> obstacles = new ArrayList<>();
 
-	int level = 1;
-	long startTime = System.currentTimeMillis();
+    int level = 1;
+    long startTime = System.currentTimeMillis();
 
-	public Game() {
+    public Game() {
 
-		obstacles.add(new Obstacle(50, 80));
-		obstacles.add(new Obstacle(150, 150));
-		obstacles.add(new Obstacle(220, 120));
+        obstacles.add(new Obstacle(50, 80, this));
+        obstacles.add(new Obstacle(150, 150, this));
+        obstacles.add(new Obstacle(220, 120, this));
 
-		addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				racquet.keyPressed(e);
-			}
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                racquet.keyPressed(e);
+            }
 
-			@Override
-			public void keyReleased(KeyEvent e) {
-				racquet.keyReleased(e);
-			}
-		});
+            @Override
+            public void keyReleased(KeyEvent e) {
+                racquet.keyReleased(e);
+            }
+        });
 
-		addMouseMotionListener(new MouseMotionAdapter() {
-			@Override
-			public void mouseMoved(MouseEvent e) {
-				racquet.setMouse(e.getX());
-			}
-		});
+        addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                racquet.setMouse(e.getX());
+            }
+        });
 
-		setFocusable(true);
-		
-		sonido.playFondo(); //reproduce la musica
+        setFocusable(true);
+        
+        sonido.playFondo(); //reproduce la musica
 
-	}
+    }
 
-	private void updateLevel() {
-		long now = System.currentTimeMillis();
+    private void updateLevel() {
+        long now = System.currentTimeMillis();
 
-		if (now - startTime >= 20000) {
-			level++;                 // puja nivell
-			startTime = now;
+        if (now - startTime >= 20000) {
+            level++;                 // puja nivell
+            startTime = now;
 
-			ball.increaseSpeed();    // +10% velocitat
-		}
-	}
+            ball.increaseSpeed();    // +10% velocitat
+        }
+    }
 
-	private void move() {
-		if (getWidth() > 0 && getHeight() > 0) {
-			updateLevel();
-			ball.move(obstacles);
-			racquet.move();
-		}
-	}
+    private void move() {
+        if (getWidth() > 0 && getHeight() > 0) {
 
-	@Override
-	protected void paintComponent(Graphics g) {
-		super.paintComponent(g);
+            updateLevel();
 
-		Graphics2D g2d = (Graphics2D) g;
+            ball.move(obstacles);
+            racquet.move();
 
-		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-				RenderingHints.VALUE_ANTIALIAS_ON);
+            // moviment obstacles
+            for (Obstacle o : obstacles) {
+                o.move();
+            }
+        }
+    }
 
-		ball.paint(g2d);
-		racquet.paint(g2d);
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
 
-		for (Obstacle o : obstacles) {
-			o.paint(g2d);
-		}
+        Graphics2D g2d = (Graphics2D) g;
 
-		// ⭐ NIVELL A PANTALLA (AIXÒ ET FALTAVA)
-		g2d.setColor(Color.BLACK);
-		g2d.setFont(new Font("Arial", Font.BOLD, 18));
-		g2d.drawString("Level: " + level, 10, 20);
-	}
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
 
-	public void gameOver() {
-	    sonido.stopFondo();  //para la musica
-	    sonido.playGameOver(); //reproduce una vez el sonido
+        ball.paint(g2d);
+        racquet.paint(g2d);
 
-	    JOptionPane.showMessageDialog(this, "GAME OVER");
+        for (Obstacle o : obstacles) {
+            o.paint(g2d);
+        }
 
-	    System.exit(0);
-	}
-	public static void main(String[] args) {
+        // ⭐ NIVELL A PANTALLA (AIXÒ ET FALTAVA)
+        g2d.setColor(Color.BLACK);
+        g2d.setFont(new Font("Arial", Font.BOLD, 18));
+        g2d.drawString("Level: " + level, 10, 20);
+    }
 
-		JFrame frame = new JFrame("Mini Tennis");
-		Game game = new Game();
+    public void gameOver() {
+        sonido.stopFondo();  //para la musica
+        sonido.playGameOver(); //reproduce una vez el sonido
 
-		frame.add(game);
-		frame.setSize(300, 400);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setVisible(true);
-		frame.setLocationRelativeTo(null);
+        JOptionPane.showMessageDialog(this, "GAME OVER");
 
-		while (true) {
-			game.move();
-			game.repaint();
+        System.exit(0);
+    }
+    public static void main(String[] args) {
 
-			try {
-				Thread.sleep(10);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
+        JFrame frame = new JFrame("Mini Tennis");
+        Game game = new Game();
+
+        frame.add(game);
+        frame.setSize(300, 400);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
+        frame.setLocationRelativeTo(null);
+
+        while (true) {
+            game.move();
+            game.repaint();
+
+            try {
+                Thread.sleep(10);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
