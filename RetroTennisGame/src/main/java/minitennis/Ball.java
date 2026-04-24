@@ -1,53 +1,79 @@
 package minitennis;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.util.List;
 
 public class Ball {
 
-    int x = 100, y = 100;
-    int xa = 2, ya = 2;
+	private int x = 10;
+	private int y = 10;
 
-    Game game;
-    static final int SIZE = 20;
+	private int xVel = 2;
+	private int yVel = 2;
 
-    public Ball(Game game) {
-        this.game = game;
-    }
+	private static final int DIAMETER = 30;
 
-    public void move() {
+	private Game game;
 
-        int width = Math.max(game.getWidth(), 300);
-        int height = Math.max(game.getHeight(), 400);
+	// multiplicador velocitat
+	private double speed = 1.0;
 
-        if (x + xa < 0 || x + xa > width - SIZE) xa = -xa;
-        if (y + ya < 0) ya = -ya;
+	public Ball(Game game) {
+		this.game = game;
+	}
 
-        if (y + ya > height - SIZE) {
-            game.loseLife();
-        }
+	// augment 10%
+	public void increaseSpeed() {
+		speed *= 1.10;
+	}
 
-        if (getBounds().intersects(game.paddle.getBounds())) {
-            ya = -Math.abs(ya);
-            Sound.BALL.play();
-        }
+	public void move(List<Obstacle> obstacles) {
 
-        x += xa;
-        y += ya;
-    }
+		int nextX = x + (int)(xVel * speed);
+		int nextY = y + (int)(yVel * speed);
 
-    public Rectangle getBounds() {
-        return new Rectangle(x, y, SIZE, SIZE);
-    }
+		// parets laterals
+		if (nextX < 0 || nextX > game.getWidth() - DIAMETER) {
+			xVel = -xVel;
+		}
 
-    public void paint(Graphics2D g) {
-        g.setColor(Color.WHITE);
-        g.fillOval(x, y, SIZE, SIZE);
-    }
+		// sostre
+		if (nextY < 0) {
+			yVel = -yVel;
+		}
 
-    public void reset() {
-        x = 100;
-        y = 100;
-        xa = 2;
-        ya = 2;
-    }
+		// game over
+		if (nextY > game.getHeight() - DIAMETER) {
+			game.gameOver();
+		}
+
+		// raqueta
+		if (game.racquet.getBounds().intersects(getBounds())) {
+			game.sonido.playGolpe(); // Reproduce el sonido cuando toca la raqueta
+
+			yVel = -Math.abs(yVel);
+		}
+
+		// obstacles
+		for (Obstacle o : obstacles) {
+			if (o.getBounds().intersects(getBounds())) {
+				xVel = -xVel;
+				yVel = -yVel;
+			}
+		}
+
+		x += (int)(xVel * speed);
+		y += (int)(yVel * speed);
+	}
+
+	public void paint(Graphics2D g) {
+		g.setColor(Color.RED);
+		g.fillOval(x, y, DIAMETER, DIAMETER);
+	}
+
+	public Rectangle getBounds() {
+		return new Rectangle(x, y, DIAMETER, DIAMETER);
+	}
 }

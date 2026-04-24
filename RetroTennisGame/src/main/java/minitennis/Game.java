@@ -1,194 +1,132 @@
 package minitennis;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 public class Game extends JPanel {
 
-    private static final long serialVersionUID = 1L;
+	Ball ball = new Ball(this);
+	Racquet racquet = new Racquet(this);
+	Sound sonido = new Sound(); //Crea objeto sonido
 
-    Ball ball;
-    Paddle paddle;
-    Obstacle[] obstacles;
-    Particle[] particles = new Particle[150];
+	List<Obstacle> obstacles = new ArrayList<>();
 
-    int score = 0;
-    int ballSpeed = 3;
-    int level;
-    int lives = 3;
+	int level = 1;
+	long startTime = System.currentTimeMillis();
 
-    boolean running = true;
+	public Game() {
 
-    public Game(int level) {
+		obstacles.add(new Obstacle(50, 80));
+		obstacles.add(new Obstacle(150, 150));
+		obstacles.add(new Obstacle(220, 120));
 
-        this.level = level;
+		addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				racquet.keyPressed(e);
+			}
 
-        setFocusable(true);
-        setBackground(new Color(20, 20, 30));
+			@Override
+			public void keyReleased(KeyEvent e) {
+				racquet.keyReleased(e);
+			}
+		});
 
-        ball = new Ball(this);
-        paddle = new Paddle(this);
-        obstacles = Obstacle.createLevel(level, this);
+		addMouseMotionListener(new MouseMotionAdapter() {
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				racquet.setMouse(e.getX());
+			}
+		});
 
-        addKeyListener(new KeyAdapter() {
-            public void keyPressed(KeyEvent e) {
-                paddle.keyPressed(e);
-            }
+		setFocusable(true);
+		
+		sonido.playFondo(); //reproduce la musica
 
-            public void keyReleased(KeyEvent e) {
-                paddle.keyReleased(e);
-            }
-        });
+	}
 
-        Sound.BACK.loop();
+	// 🔥 NIVELL FUNCIONANT REALMENT
+	private void updateLevel() {
+		long now = System.currentTimeMillis();
 
-        // ✔ GAME LOOP CORRECTO (SIN THREAD)
-        Timer timer = new Timer(10, e -> gameLoop());
-        timer.start();
-    }
+		if (now - startTime >= 20000) {
+			level++;                 // puja nivell
+			startTime = now;
 
-    void gameLoop() {
+			ball.increaseSpeed();    // +10% velocitat
+		}
+	}
 
-        if (!running) return;
+	private void move() {
+		if (getWidth() > 0 && getHeight() > 0) {
+			updateLevel();
+			ball.move(obstacles);
+			racquet.move();
+		}
+	}
 
-        move();
-        updateParticles();
-        repaint();
-    }
+	@Override
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
 
-    public void move() {
+		Graphics2D g2d = (Graphics2D) g;
 
-        ball.move();
-        paddle.move();
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+				RenderingHints.VALUE_ANTIALIAS_ON);
 
-        boolean anyLeft = false;
+		ball.paint(g2d);
+		racquet.paint(g2d);
 
-        for (Obstacle o : obstacles) {
-            if (!o.isDestroyed()) {
-                o.checkCollision(ball);
-                anyLeft = true;
-            }
-        }
+		for (Obstacle o : obstacles) {
+			o.paint(g2d);
+		}
 
-        if (!anyLeft) levelComplete();
-    }
+		// ⭐ NIVELL A PANTALLA (AIXÒ ET FALTAVA)
+		g2d.setColor(Color.BLACK);
+		g2d.setFont(new Font("Arial", Font.BOLD, 18));
+		g2d.drawString("Level: " + level, 10, 20);
+	}
 
-    public void loseLife() {
+	public void gameOver() {
+	    sonido.stopFondo();  //para la musica
+	    sonido.playGameOver(); //reproduce una vez el sonido
 
-        lives--;
+	    JOptionPane.showMessageDialog(this, "GAME OVER");
 
-        if (lives <= 0) {
-            gameOver();
-        } else {
-            ball.reset();
-        }
-    }
+	    System.exit(0);
+	}
+	public static void main(String[] args) {
 
-    public void addScore(int points) {
-        score += points;
-    }
+		JFrame frame = new JFrame("Mini Tennis");
+		Game game = new Game();
 
-    public void addParticles(int x, int y) {
+		frame.add(game);
+		frame.setSize(300, 400);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setVisible(true);
+		frame.setLocationRelativeTo(null);
 
-        for (int i = 0; i < particles.length; i++) {
-            if (particles[i] == null) {
-                particles[i] = new Particle(x, y);
-                break;
-            }
-        }
-    }
+		while (true) {
+			game.move();
+			game.repaint();
 
-    private void updateParticles() {
-
-        for (int i = 0; i < particles.length; i++) {
-            if (particles[i] != null) {
-                particles[i].update();
-                if (particles[i].isDead()) particles[i] = null;
-            }
-        }
-    }
-
-    public void gameOver() {
-
-        running = false;
-
-        Sound.BACK.stop();
-        Sound.GAMEOVER.play();
-
-        JOptionPane.showMessageDialog(this,
-                Lang.get("game_over") + "\nScore: " + score);
-
-        SwingUtilities.getWindowAncestor(this).dispose();
-        new Menu();
-    }
-
-    public void levelComplete() {
-
-        running = false;
-
-        Sound.BACK.stop();
-
-        JOptionPane.showMessageDialog(this,
-                Lang.get("level_completed") + " " + level);
-
-        SwingUtilities.getWindowAncestor(this).dispose();
-        new LevelSelect();
-    }
-
-    @Override
-    public void paintComponent(Graphics g) {
-
-        super.paintComponent(g);
-
-        Graphics2D g2 = (Graphics2D) g;
-
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON);
-
-        // 🎮 ENTIDADES
-        ball.paint(g2);
-        paddle.paint(g2);
-
-        for (Obstacle o : obstacles) o.paint(g2);
-        for (Particle p : particles) if (p != null) p.paint(g2);
-
-        drawHUD(g2);
-    }
-
-    private void drawHUD(Graphics2D g2) {
-
-        // fondo HUD
-        g2.setColor(new Color(0, 0, 0, 160));
-        g2.fillRoundRect(10, 10, getWidth() - 20, 40, 20, 20);
-
-        g2.setFont(new Font("Consolas", Font.BOLD, 14));
-
-        drawText(g2, "Score: " + score, 25, 35, Color.CYAN);
-        drawText(g2, "Level: " + level, getWidth()/2 - 30, 35, Color.ORANGE);
-
-        drawHearts(g2);
-    }
-
-    private void drawText(Graphics2D g, String text, int x, int y, Color color) {
-
-        g.setColor(new Color(0,0,0,120));
-        g.drawString(text, x + 1, y + 1);
-
-        g.setColor(color);
-        g.drawString(text, x, y);
-    }
-
-    private void drawHearts(Graphics2D g) {
-
-        int x = getWidth() - 120;
-
-        for (int i = 0; i < 3; i++) {
-
-            if (i < lives) g.setColor(Color.RED);
-            else g.setColor(new Color(80,80,80));
-
-            g.fillOval(x + i * 20, 20, 12, 12);
-        }
-    }
+			try {
+				Thread.sleep(10);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
 }

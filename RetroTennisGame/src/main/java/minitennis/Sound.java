@@ -1,50 +1,64 @@
 package minitennis;
 
-import javax.sound.sampled.*;
+import java.applet.Applet;
+import java.applet.AudioClip;
 import java.net.URL;
 
 public class Sound {
 
-    public static final Sound BACK = new Sound("adrihuwu-adrihuwu-join-my-server-209103.wav");
-    public static final Sound BALL = new Sound("dragon-studio-tennis-ball-hit-386155.wav");
-    public static final Sound GAMEOVER = new Sound("calango_fx_official-game-over-401236.wav");
+    private AudioClip fondo; //variable para la musica de fondo
+    private AudioClip golpe; //variable para el sonido de rebote
+    private AudioClip gameover; //variable de game over
 
-    private Clip clip;
-
-    public Sound(String file) {
-        try {
-            URL url = getClass().getResource("/minitennis/" + file);
-
-            if (url == null) {
-                System.out.println("NO ENCUENTRA AUDIO: " + file);
-                return;
-            }
-
-            AudioInputStream audio =
-                    AudioSystem.getAudioInputStream(url);
-
-            clip = AudioSystem.getClip();
-            clip.open(audio);
-
-        } catch (Exception e) {
-            System.out.println("Error sonido: " + file);
-            e.printStackTrace();
+    public Sound() {
+        try { //carga musica la musica
+            fondo = cargarSonido("musica1.wav");
+            golpe = cargarSonido("minitennis.sound/edr-8-bit-jump-001-171817.wav");
+            gameover = cargarSonido("gameOver.wav");
+        } catch (Exception e) { // excepcion para que si falla algun archivo da error
+            System.out.println("Error cargando sonidos.");
         }
     }
 
-    public void play() {
-        if (clip == null) return;
-        clip.setFramePosition(0);
-        clip.start();
+    private AudioClip cargarSonido(String archivo) {
+        URL url = getClass().getResource(archivo); //obtiene la ruta de archivo
+        return Applet.newAudioClip(url); // Convierte archivo en sonido reproducible
+
+    }
+   
+    /**
+     * Reproduce música de fondo en bucle infinito
+     */
+    
+    public void playFondo() {
+        if (fondo != null) {
+            fondo.loop();
+        }
     }
 
-    public void loop() {
-        if (clip == null) return;
-        clip.loop(Clip.LOOP_CONTINUOUSLY);
+    /**
+     * Reproduce sonido de golpe una sola vez
+     */
+    public void playGolpe() {
+        if (golpe != null) {
+            golpe.play();
+        }
     }
 
-    public void stop() {
-        if (clip == null) return;
-        clip.stop();
+    /**
+     * Reproduce sonido de Game Over una vez
+     */
+    public void playGameOver() {
+        if (gameover != null) {
+            gameover.play();
+        }
+    }
+    /**
+     * Detiene la música de fondo
+     */
+    public void stopFondo() {
+        if (fondo != null) {
+            fondo.stop();
+        }
     }
 }
