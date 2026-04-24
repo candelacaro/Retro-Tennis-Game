@@ -27,11 +27,19 @@ public class Game extends JPanel {
 
     List<Obstacle> obstacles = new ArrayList<>();
 
-    int level = 1;
+    static int level;
+    
     long startTime = System.currentTimeMillis();
+	private static String playerName;
 
-    public Game() {
+    public Game(String playerName, int selectedLevel) {
 
+    	this.playerName = playerName;
+        this.level = selectedLevel;
+
+        for (int i = 1; i < selectedLevel; i++) {
+            ball.increaseSpeed();
+        }
         obstacles.add(new Obstacle(50, 80, this));
         obstacles.add(new Obstacle(150, 150, this));
         obstacles.add(new Obstacle(220, 120, this));
@@ -72,7 +80,7 @@ public class Game extends JPanel {
         }
     }
 
-    private void move() {
+    void move() {
         if (getWidth() > 0 && getHeight() > 0) {
 
             updateLevel();
@@ -103,7 +111,6 @@ public class Game extends JPanel {
             o.paint(g2d);
         }
 
-        // ⭐ NIVELL A PANTALLA (AIXÒ ET FALTAVA)
         g2d.setColor(Color.BLACK);
         g2d.setFont(new Font("Arial", Font.BOLD, 18));
         g2d.drawString("Level: " + level, 10, 20);
@@ -120,7 +127,7 @@ public class Game extends JPanel {
     public static void main(String[] args) {
 
         JFrame frame = new JFrame("Mini Tennis");
-        Game game = new Game();
+        Game game = new Game(playerName, level);
 
         frame.add(game);
         frame.setSize(300, 400);
@@ -139,4 +146,5 @@ public class Game extends JPanel {
             }
         }
     }
+    
 }
