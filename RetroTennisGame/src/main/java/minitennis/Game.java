@@ -1,145 +1,123 @@
 package minitennis;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-
 public class Game extends JPanel {
-	
-	//Instància de la bola
+
 	Ball ball = new Ball(this);
-	
-	//Instància de la raqueta
 	Racquet racquet = new Racquet(this);
-	
-	
-	/**
-	 * Constructors de la classe. Configura els listeners per a les entrades 
-     * de teclat i rató, i estableix el focus del component.
-	 */
+
+	List<Obstacle> obstacles = new ArrayList<>();
+
+	int level = 1;
+	long startTime = System.currentTimeMillis();
+
 	public Game() {
-		
-		//Listener de teclat: Captura quan l'usuari prem una tecla.
-		addKeyListener(new KeyAdapter(){
-			
-			/**
-			 * 
-			 * @param e
-			 */
+
+		obstacles.add(new Obstacle(50, 80));
+		obstacles.add(new Obstacle(150, 150));
+		obstacles.add(new Obstacle(220, 120));
+
+		addKeyListener(new KeyAdapter() {
 			@Override
-			public void keyPressed (KeyEvent e) {
-				//Delegació d'esdeveniments de teclat a la classe Racquet
+			public void keyPressed(KeyEvent e) {
 				racquet.keyPressed(e);
 			}
-			
-			/**
-			 * 
-			 * @param e
-			 */
+
+			@Override
 			public void keyReleased(KeyEvent e) {
 				racquet.keyReleased(e);
 			}
 		});
-		
-		//Escoltador de moviment de rató
+
 		addMouseMotionListener(new MouseMotionAdapter() {
-			
-			/**
-			 * 
-			 * @param e
-			 */
 			@Override
 			public void mouseMoved(MouseEvent e) {
-				//Sincronització de la X del ratolí amb la raqueta
 				racquet.setMouse(e.getX());
 			}
 		});
-		
-		//Requerit per capturar esdeveniments de teclat
+
 		setFocusable(true);
 	}
-	
-	/**
-	 * Mètode privat que coordina l'actualització de la lògica del moviment de tots 
-     * els components del joc (bola i raqueta)
-	 */
-	private void move() {
-	    /*
-	     * Estructura condicional on es comprova si l'altura i l'amplada és major a 0
-	     * (a la superfície de la consola) i d'aquesta manera es mou la bola i la raqueta
-	     */
-		
-	    if (getWidth() > 0 && getHeight() > 0) {
-	        ball.move();
-	        racquet.move();
-	    }
+
+	// 🔥 NIVELL FUNCIONANT REALMENT
+	private void updateLevel() {
+		long now = System.currentTimeMillis();
+
+		if (now - startTime >= 20000) {
+			level++;                 // puja nivell
+			startTime = now;
+
+			ball.increaseSpeed();    // +10% velocitat
+		}
 	}
-	
-	/**
-	 * Sobreescriptura del mètode de renderitzat de Swing per dibuixar els frames.
-	 */
+
+	private void move() {
+		if (getWidth() > 0 && getHeight() > 0) {
+			updateLevel();
+			ball.move(obstacles);
+			racquet.move();
+		}
+	}
+
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		
-		//Càsting per accedir als gràfics 2d
+
 		Graphics2D g2d = (Graphics2D) g;
-		
-		/**
-		 * Filtre de qualitat gràfica que fa que les figures geomètriques (cercles i rectangles) 
-		 * es vegin suaus en lloc de pixelades.
-		 * 
-		 * RenderingHints: 
-		 * KEY_ANTIALIASING: 
-		 * VALUE_ANTIALIAS_ON: 
-		 */
-		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		
+
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+				RenderingHints.VALUE_ANTIALIAS_ON);
+
 		ball.paint(g2d);
 		racquet.paint(g2d);
+
+		for (Obstacle o : obstacles) {
+			o.paint(g2d);
+		}
+
+		// ⭐ NIVELL A PANTALLA (AIXÒ ET FALTAVA)
+		g2d.setColor(Color.BLACK);
+		g2d.setFont(new Font("Arial", Font.BOLD, 18));
+		g2d.drawString("Level: " + level, 10, 20);
 	}
-	
+
 	public void gameOver() {
-		JOptionPane.showMessageDialog(this, "GAME-OVER", null, JOptionPane.YES_NO_OPTION);
+		JOptionPane.showMessageDialog(this, "GAME OVER", null, JOptionPane.YES_NO_OPTION);
 		System.exit(0);
 	}
-	
-	public static void main (String[] args) {
+
+	public static void main(String[] args) {
+
 		JFrame frame = new JFrame("Mini Tennis");
 		Game game = new Game();
-		
-		final int SIZE_WIDTH_CONSOLE = 300;
-		final int SIZE_HIGHT_CONSOLE = 400;
-		final int PAUSA_MILISEGONS = 10;
-		
+
 		frame.add(game);
-		frame.setSize(SIZE_WIDTH_CONSOLE, SIZE_HIGHT_CONSOLE);
+		frame.setSize(300, 400);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
-		
-		
-		while(true) {
+		frame.setLocationRelativeTo(null);
+
+		while (true) {
 			game.move();
 			game.repaint();
-			
-			/*
-			 * Control de frames: try-catch, per intentar que la ball
-			 * tingui el millor flux possible, ni massa ràpid ni massa lent
-			 */
+
 			try {
-				//
-				Thread.sleep(PAUSA_MILISEGONS);
-			} catch(InterruptedException e) {
+				Thread.sleep(10);
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
