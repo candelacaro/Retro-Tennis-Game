@@ -53,7 +53,7 @@ public class InitialWindow {
 
         if (result == JOptionPane.OK_OPTION && !fieldNom.getText().isEmpty()) {
             
-            // 3. Mostrar regles i acceptar per començar 
+            //Mostrar regles i acceptar per començar 
             int acceptaRegles = JOptionPane.showConfirmDialog(null, 
             		controlLang.get("regles"), "Rules", JOptionPane.OK_CANCEL_OPTION);
 

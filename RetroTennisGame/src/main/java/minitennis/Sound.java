@@ -13,7 +13,7 @@ public class Sound {
     public Sound() {
         try { //carga musica la musica
             fondo = cargarSonido("musica1.wav");
-            golpe = cargarSonido("minitennis.sound/edr-8-bit-jump-001-171817.wav");
+            golpe = cargarSonido("edr-8-bit-jump-001-171817.wav");
             gameover = cargarSonido("gameOver.wav");
         } catch (Exception e) { // excepcion para que si falla algun archivo da error
             System.out.println("Error cargando sonidos.");

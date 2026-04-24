@@ -17,6 +17,10 @@ import javax.swing.JPanel;
 
 public class Game extends JPanel {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	Ball ball = new Ball(this);
 	Racquet racquet = new Racquet(this);
 	Sound sonido = new Sound(); //Crea objeto sonido
@@ -57,7 +61,6 @@ public class Game extends JPanel {
 
 	}
 
-	// 🔥 NIVELL FUNCIONANT REALMENT
 	private void updateLevel() {
 		long now = System.currentTimeMillis();
 
