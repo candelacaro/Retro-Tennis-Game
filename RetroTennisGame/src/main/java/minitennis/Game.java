@@ -77,6 +77,7 @@ public class Game extends JPanel {
 	     * Estructura condicional on es comprova si l'altura i l'amplada és major a 0
 	     * (a la superfície de la consola) i d'aquesta manera es mou la bola i la raqueta
 	     */
+		
 	    if (getWidth() > 0 && getHeight() > 0) {
 	        ball.move();
 	        racquet.move();
