@@ -19,6 +19,7 @@ public class Game extends JPanel {
 
 	Ball ball = new Ball(this);
 	Racquet racquet = new Racquet(this);
+	Sound sonido = new Sound(); //Crea objeto sonido
 
 	List<Obstacle> obstacles = new ArrayList<>();
 
@@ -51,6 +52,9 @@ public class Game extends JPanel {
 		});
 
 		setFocusable(true);
+		
+		sonido.playFondo(); //reproduce la musica
+
 	}
 
 	// 🔥 NIVELL FUNCIONANT REALMENT
@@ -96,10 +100,13 @@ public class Game extends JPanel {
 	}
 
 	public void gameOver() {
-		JOptionPane.showMessageDialog(this, "GAME OVER", null, JOptionPane.YES_NO_OPTION);
-		System.exit(0);
-	}
+	    sonido.stopFondo();  //para la musica
+	    sonido.playGameOver(); //reproduce una vez el sonido
 
+	    JOptionPane.showMessageDialog(this, "GAME OVER");
+
+	    System.exit(0);
+	}
 	public static void main(String[] args) {
 
 		JFrame frame = new JFrame("Mini Tennis");

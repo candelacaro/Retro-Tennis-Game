@@ -51,6 +51,8 @@ public class Ball {
 
 		// raqueta
 		if (game.racquet.getBounds().intersects(getBounds())) {
+			game.sonido.playGolpe(); // Reproduce el sonido cuando toca la raqueta
+
 			yVel = -Math.abs(yVel);
 		}
 
