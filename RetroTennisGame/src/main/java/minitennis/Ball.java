@@ -65,26 +65,29 @@ public class Ball {
             yVel = -Math.abs(yVel); // Rebot cap a dalt
             nextY = game.racquet.getTopY() - DIAMETER; 
         }
-
+        Obstacle objetoADestruir = null;
         // --- Lògica de col·lisió amb obstacles i DESTRUCCIÓ ---
-        Obstacle objetoADestruir = null;	
 
         for (Obstacle o : obstacles) {
             if (o.getBounds().intersects(new Rectangle(nextX, nextY, DIAMETER, DIAMETER))) {
                 
-                objetoADestruir = o; // --- NOU: Assignem l'obstacle per retornar-lo a Game ---
-
+                o.recibirGolpe(); // El obstáculo pierde 1 vida
+                
+                // SOLO si la vida llega a 0, lo marcamos para destruir
+                if (o.getVida() <= 0) {
+                    objetoADestruir = o;
+                }
                 Rectangle obsRect = o.getBounds();
                 Rectangle ballRect = new Rectangle(nextX, nextY, DIAMETER, DIAMETER);
 
-                // Càlcul de la penetració de l'objecte
+             // Càlcul de la penetració de l'objecte per cada costat per determinar la direcció del rebot
                 int penetracioDreta = ballRect.x + ballRect.width - obsRect.x;
                 int penetracioEsquerra = obsRect.x + obsRect.width - ballRect.x;
                 int penetracioTerra = ballRect.y + ballRect.height - obsRect.y;
                 int penetracioSostre = obsRect.y + obsRect.height - ballRect.y;
-
+             // Busquem la penetració mínima per saber quina cara de l'obstacle s'ha tocat
                 int penetracioMinima = Math.min(Math.min(penetracioDreta, penetracioEsquerra), Math.min(penetracioSostre, penetracioTerra));
-
+             // Inversió de velocitat i ajust de posició segons el punt de xoc
                 if (penetracioMinima == penetracioDreta) {
                     xVel = -Math.abs(xVel); 
                     nextX = obsRect.x - ballRect.width; 
@@ -102,7 +105,7 @@ public class Ball {
                     nextY = obsRect.y + obsRect.height;
                 }
                 
-                game.sonido.playGolpe(); 
+                game.sonido.playGolpe(); // So del choque amb l'obstacle
                 break; // Sortim del bucle per gestionar només una col·lisió
             }
         }
@@ -113,12 +116,17 @@ public class Ball {
 
         return objetoADestruir; // Retornem l'objecte a Game
     }
-
+    /**
+     * Mètode que s'encarrega de dibuixar la pilota en el context gràfic.
+     */
     public void paint(Graphics2D g) {
         g.setColor(Color.YELLOW);
         g.fillOval(x, y, DIAMETER, DIAMETER);
     }
-
+    /**
+     * Mètode accessor que exporta els límits de la pilota per a la detecció de xocs.
+     * @return Rectangle amb la posició i mida actuals.
+     */
     public Rectangle getBounds() {
         return new Rectangle(x, y, DIAMETER, DIAMETER);
     }
