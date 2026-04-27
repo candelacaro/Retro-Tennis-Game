@@ -140,8 +140,8 @@ public class Game extends JPanel {
         }
 
         // --- NOVA PART: Dibuixar nivell i puntuació ---
-        g2d.setColor(Color.BLACK);
-        g2d.setFont(new Font("Arial", Font.BOLD, 16));
+        g2d.setColor(Color.WHITE);
+        g2d.setFont(new Font("Retro", Font.BOLD, 12));
 
         // Mostrem el Nivell
         g2d.drawString("Level: " + level, 10, 20);

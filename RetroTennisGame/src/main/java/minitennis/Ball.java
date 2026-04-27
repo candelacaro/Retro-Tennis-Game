@@ -105,7 +105,7 @@ public class Ball {
     }
 
     public void paint(Graphics2D g) {
-        g.setColor(Color.RED);
+        g.setColor(Color.YELLOW);
         g.fillOval(x, y, DIAMETER, DIAMETER);
     }
 

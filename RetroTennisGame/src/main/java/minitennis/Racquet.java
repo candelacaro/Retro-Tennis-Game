@@ -38,7 +38,7 @@ public class Racquet {
 	}
 	
 	public void paint(Graphics2D g2d) {
-		g2d.setColor(Color.BLACK);
+		g2d.setColor(Color.MAGENTA);
 		g2d.fillRect(x, Y, WIDTH, HEIGHT);
 	}
 	
