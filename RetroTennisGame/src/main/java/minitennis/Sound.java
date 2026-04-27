@@ -6,28 +6,28 @@ import java.net.URL;
 
 public class Sound {
 
-    private AudioClip fondo; //variable para la musica de fondo
-    private AudioClip golpe; //variable para el sonido de rebote
-    private AudioClip gameover; //variable de game over
+    private AudioClip fondo; //variable per la musica de fons
+    private AudioClip golpe; //variable per al so del rebot
+    private AudioClip gameover; //variable per al so de game over
 
     public Sound() {
-        try { //carga musica la musica
+        try { //carrega la musica
             fondo = cargarSonido("musica1.wav");
             golpe = cargarSonido("edr-8-bit-jump-001-171817.wav");
             gameover = cargarSonido("gameOver.wav");
-        } catch (Exception e) { // excepcion para que si falla algun archivo da error
+        } catch (Exception e) { // excepció per si falla al carregar algu arxiu.
             System.out.println("Error cargando sonidos.");
         }
     }
 
     private AudioClip cargarSonido(String archivo) {
-        URL url = getClass().getResource(archivo); //obtiene la ruta de archivo
-        return Applet.newAudioClip(url); // Convierte archivo en sonido reproducible
+        URL url = getClass().getResource(archivo); //obté la ruta del arxiu
+        return Applet.newAudioClip(url); // Converteix el arxiu en so reproduible.
 
     }
    
     /**
-     * Reproduce música de fondo en bucle infinito
+     * Reprodueix musica de fons en un bucle infinit.
      */
     
     public void playFondo() {
@@ -37,7 +37,7 @@ public class Sound {
     }
 
     /**
-     * Reproduce sonido de golpe una sola vez
+     * Reprodueix el so de cop una sola vegada
      */
     public void playGolpe() {
         if (golpe != null) {
@@ -46,7 +46,7 @@ public class Sound {
     }
 
     /**
-     * Reproduce sonido de Game Over una vez
+     * Reprodueix el so de Game Over una vegada.
      */
     public void playGameOver() {
         if (gameover != null) {
@@ -54,7 +54,7 @@ public class Sound {
         }
     }
     /**
-     * Detiene la música de fondo
+     * Atura la música de fons
      */
     public void stopFondo() {
         if (fondo != null) {
