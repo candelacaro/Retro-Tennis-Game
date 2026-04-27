@@ -12,7 +12,8 @@ import java.awt.event.MouseMotionAdapter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
+import javax.swing.ImageIcon;
+import java.awt.Image;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -37,12 +38,20 @@ public class Game extends JPanel {
 	 * @param playerName
 	 * @param selectedLevel
 	 */
+	private Image fondo;
+
     public Game(String playerName, int selectedLevel) {
 
     	this.playerName = playerName;
         this.level = selectedLevel;
-
-        for (int i = 1; i < selectedLevel; i++) {
+    
+     		try {
+     			fondo = new ImageIcon(getClass().getResource("fondovideojuego.jpg")).getImage();
+     		} catch (Exception e) {
+     			System.out.println("No se pudo cargar la imagen de fondo.");
+     		}
+       
+     		for (int i = 1; i < selectedLevel; i++) {
             ball.increaseSpeed();
         }
         
@@ -118,6 +127,7 @@ public class Game extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
     	super.paintComponent(g);
+        g.drawImage(fondo, 0, 0, getWidth(), getHeight(), this);
 
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
