@@ -34,16 +34,16 @@ public class Obstacle {
 
     public void paint(Graphics2D g) {
 
-        // cuerpo fantasma
+        //Cos del fantasma
         g.setColor(new Color(180, 0, 255));
 
-        // cabeza
+        // Cap
         g.fillOval(x, y, WIDTH, 18);
 
-        // cuerpo rectangular
+        // Cos rectangular
         g.fillRect(x, y + 9, WIDTH, 12);
 
-        // ondas inferiores
+        // ones inferiors
         g.fillOval(x, y + 16, 8, 12);
         g.fillOval(x + 9, y + 16, 8, 12);
         g.fillOval(x + 18, y + 16, 8, 12);
