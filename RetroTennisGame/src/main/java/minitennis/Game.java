@@ -36,7 +36,7 @@ public class Game extends JPanel {
 	/**
      * Constructor de la classe Game.
      * Configura l'estat inicial del joc, els manejadors d'esdeveniments i l'àudio.
-     * * @param playerName Nom identificador del jugador.
+     * @param playerName Nom identificador del jugador.
      * @param selectedLevel Nivell de dificultat inicial escollit.
      */
 	private Image fondo; //referencia d'objecte per a la imatge de fons

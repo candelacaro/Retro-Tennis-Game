@@ -6,7 +6,7 @@ public class MainApp {
 
 		InitialWindow menu = new InitialWindow();
 
-		// Cridem al mètode que gestiona la tria d'idioma, nom, nivell i regles
+		
 		menu.mostrarMenu();
 	}
 
