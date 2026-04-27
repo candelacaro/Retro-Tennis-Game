@@ -66,14 +66,19 @@ public class InitialWindow {
     }
 
 	private void llançarJoc(String nom, int nivell) {
+        Game game = new Game(nom, nivell);
+
         JFrame frame = new JFrame("Retro Tenis - " + nom);
-        Game game = new Game();
         //game.iniciarPartida(nom, nivell, controlLang); // Injectem dades i idioma
         frame.add(game);
         frame.setSize(300, 400);
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
         //game.arrencarBucle(); // Inicia el fil d'execució
+        new javax.swing.Timer(10, e -> {
+            game.move();
+            game.repaint();
+        }).start();
     }
 }
 
