@@ -34,8 +34,6 @@ public class Game extends JPanel {
 	List<Ball> balls = new ArrayList<>();
 	//Llista d'obstacles a destruir
 	List<Obstacle> obstacles = new ArrayList<>();
-	//Llista de PowerUps
-	List<PowerUp> powerUps = new ArrayList<>();
 
 	//Declaració i inicialització de variable estàtica, que representa el nivell del joc
 	static int level;
@@ -183,7 +181,7 @@ public class Game extends JPanel {
 			//Instància d'objecte (bola) de la classe Ball
 			Ball b2 = new Ball(this);
 			//Li posem velocitat a la bola
-			b2.setSpeed(balls.get(level).getSpeed());
+			b2.setSpeed(balls.get(0).getSpeed());
 			//Afegim la nova bola a la llista
 			balls.add(b2);
 		}
@@ -198,81 +196,122 @@ public class Game extends JPanel {
 				obstacles.remove(chocado);
 		}
 
-		for (Obstacle o : obstacles)
+		//Estructura iterativa que recorre la llista d'obstacles
+		for (Obstacle o : obstacles) {
+			//fem servir el mètode move() per moure el obstacle
 			o.move();
-
-		// PowerUps (Nivell 16+)
-		if (level >= 16 && Math.random() < 0.005) {
-			powerUps.add(new PowerUp(new Random().nextInt(getWidth() - 20), 0, this));
-		}
-
-		for (int i = 0; i < powerUps.size(); i++) {
-			PowerUp p = powerUps.get(i);
-			p.move();
-			if (p.getBounds().intersects(racquet.getBounds())) {
-				multiplicarBoles();
-				powerUps.remove(i);
-			} else if (p.isOut()) {
-				powerUps.remove(i);
-			}
 		}
 	}
 
+	/**
+	 * Mètode que dibuixa la representació gràfica del joc
+	 */
 	@Override
 	protected void paintComponent(Graphics g) {
+		
+		//
 		super.paintComponent(g);
+		//Instància d'bjecte i càsting g
 		Graphics2D g2d = (Graphics2D) g;
+		
+		//Mostra del fons mitjançant mètode drawImage, posem el fons i els límits
 		g2d.drawImage(fons, 0, 0, getWidth(), getHeight(), this);
 
+		//Fem servir el mètode setRenderingHint(), per renderitzar el fons i objectes i que es mostri net
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-		for (Ball b : balls)
+		//Estructura iterativa que recorre la llista balls
+		for (Ball b : balls) {
+			//Fem servir el mètode .paint() per dibuixar les boles
 			b.paint(g2d);
-		for (PowerUp p : powerUps)
-			p.paint(g2d);
+		}
+		
+		//Amb el mètode paint() pintem la raqueta
 		racquet.paint(g2d);
-		for (Obstacle o : obstacles)
+		//Estructura iterativa que recorre la llista obstacles
+		for (Obstacle o : obstacles) {
+			//Amb el mètode paint(), pintem els obstacles
 			o.paint(g2d);
+		}
 
+		//Posem color blanc amb el mètode setColor, per la lletra
 		g2d.setColor(Color.WHITE);
-		g2d.setFont(new Font("Arial", Font.BOLD, 12));
+		//Amb el mètode setFont posem una font Retro, la lletra en negreta i la mida
+		g2d.setFont(new Font("Retro", Font.BOLD, 12));
+		//Dibuixem amb el mètode drawString perquè es mostri el nivell que s'està jugant
 		g2d.drawString("Level: " + level, 10, 20);
-		g2d.drawString("Points: " + score + " ms", 10, 40);
+		//Dibuixem amb el mètode drawString perquè es mostri els punts que s'està jugant
+		g2d.drawString("Score: " + score + " ms", 10, 40);
 	}
 
+	/**
+	 * Mètode que serveix per multiplicar el número de boles
+	 */
 	private void multiplicarBoles() {
+		//Estructura condicional que avalua si la llista balls té menys de 6
 		if (balls.size() < 6) {
+			//Declaració i inicialització de variable que igualem al número d'elements de la llista
 			int totals = balls.size();
+			//Declaració i inicialització de variable double que accedeix al primer element i afaga la seva velocitat
 			double v = balls.get(0).getSpeed();
+			//Estructura iterativa
 			for (int i = 0; i < totals; i++) {
+				//Instància d'objecte (bola) de la classe Ball
 				Ball n = new Ball(this);
+				//Modifiquem la velocitat al valor v
 				n.setSpeed(v);
+				//Afegim la bola a la llista ball
 				balls.add(n);
 			}
 		}
 	}
 
+	/**
+	 * Mètode que actualitza els obstacles segons el nivell que s'està jugant
+	 * @param nivellActual, el nivell que s'està jugant
+	 */
 	private void actualitzarObstacles(int nivellActual) {
+		//Amb el mètode .clear() netejem els obstacles
 		obstacles.clear();
-		if (nivellActual < 2)
+		//Estructura condicional avalua si hem arribat al nivell 2
+		if (nivellActual < 2) {
+			//No retornem res
 			return;
+		}
+		
+		//Declaració i inicialització de variable que calcula el numObstacles, com a màxim 10. Ho controlem amb el mètode Math.min()
 		int numObstacles = Math.min(nivellActual - 1, 10);
+		
+		//Declaració i incialització de random
 		Random rand = new Random();
+		
+		//Estructura iterativa que afegeix una instància d'objecte obstacle a la llista obstacles
 		for (int i = 0; i < numObstacles; i++) {
-			obstacles.add(new Obstacle(rand.nextInt(250) + 10, rand.nextInt(150) + 50, this, nivellActual));
+			//Afegim un objecte obstacle a la llista obstacle 
+			obstacles.add(new Obstacle(rand.nextInt(250) + 10, rand.nextInt(150) + 50, 
+					this, nivellActual));
 		}
 	}
 
+	/**
+	 * Mètode que controla quan la bola ha caigut i perds
+	 */
 	public void gameOver() {
+		//Reproducció de so amb mètode de la classe sound
 		sonido.stopFondo();
+		//Reproducció de so gameOver
 		sonido.playGameOver();
+		//Mostra de jugador i punts
 		JOptionPane.showMessageDialog(this, "GAME OVER\n" + playerName + "\nScore: " + score);
-		System.exit(0);
+		
 	}
 
+	
+	
+	
+	//MAIN PER FE RPROVES
 	public static void main(String[] args) {
-		// Aquest main és només per proves ràpides,
-		// el flux real ha de venir de MainApp -> InitialWindow
+		
 		JFrame frame = new JFrame("Mini Tennis");
 		Game game = new Game("Jugador", 1);
 		frame.add(game);
