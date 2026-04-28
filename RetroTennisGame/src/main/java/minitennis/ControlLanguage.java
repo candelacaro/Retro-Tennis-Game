@@ -19,7 +19,7 @@ public class ControlLanguage {
      * Mètode d'accés per obtenir la traducció d'una etiqueta.
      * Implementa una lògica de selecció múltiple per resoldre
      * la cadena de text corresponent a la clau i l'idioma actual.
-     * * @param clau Identificador únic del text.
+     * @param clau Identificador únic del text.
      * @return El text traduït o un missatge d'error si l'idioma no existeix.
      */
 	public String get(String clau) {
@@ -41,6 +41,8 @@ public class ControlLanguage {
 				return "Acceptar";
 			case "nom_usuari":
 				return "Introdueix el teu nom:";
+			case "error_nom":
+			    return "Has d'introduir un nom!"; // (Adapta el text a cada idioma)
 			default:
 				return clau; // si la clau no existeix, retorna el nom de la clau
 			}
@@ -59,6 +61,8 @@ public class ControlLanguage {
 				return "Aceptar";
 			case "nom_usuari":
 				return "Introduce tu nombre:";
+			case "error_nom":
+			    return "Debes de introducir el nombre!"; // (Adapta el text a cada idioma)
 			default:
 				return clau;
 			}
@@ -77,6 +81,8 @@ public class ControlLanguage {
 				return "Aceptar";
 			case "nom_usuari":
 				return "Enter your name:";
+			case "error_nom":
+			    return "You must enter a name!"; // (Adapta el text a cada idioma)
 			default:
 				return clau;
 			}

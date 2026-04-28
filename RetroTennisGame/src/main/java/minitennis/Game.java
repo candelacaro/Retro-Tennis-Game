@@ -96,13 +96,13 @@ public class Game extends JPanel {
 	private void updateLevel() {
 		long now = System.currentTimeMillis();
 
-		// --- LÒGICA D'ACUMULACIÓ DE PUNTS ---
+		// LÒGICA D'ACUMULACIÓ DE PUNTS
 		// Calculem quants mil·lisegons han passat des de l'últim "update"
 		long elapsed = now - lastPointUpdate;
 		score += elapsed; // Acumulem el temps a la puntuació total (no es reinicia mai)
 		lastPointUpdate = now; // Actualitzem la marca de temps per al pròxim càlcul
 
-		// --- LÒGICA DE CANVI DE NIVELL ---
+		// LÒGICA DE CANVI DE NIVELL
 		// Controla si han passat 20 segons des de l'últim canvi de nivell
 		if (now - startTime >= 20000) {
 			level++;
