@@ -84,21 +84,26 @@ public class Ball {
 		/*Estructura condicional on avalua la lògica de rebot amb els marges 
 		 * de la finestra*/
 		if (nextX < 0) {
-			// Rebot paret esquerra
-			xVel = 1;
-		}
-		if (nextX > game.getWidth() - DIAMETER) {
-			// Rebot paret dreta
-			xVel = -1;
-		}
-		if (nextY < 0) {
-			// Rebot sostre
-			yVel = 1;
-		}
-		if (nextY > game.getHeight() - DIAMETER) {
-			// Si toca el terra, acaba la partida
-			game.gameOver();
-		}
+			// Forçar direcció a la dreta
+            xVel = Math.abs(xVel); 
+            //Corregim la posició
+            nextX = 0;
+        } else if (nextX > game.getWidth() - DIAMETER) {
+        	 	// Forçar direcció a l'esquerra
+            xVel = -Math.abs(xVel);
+            nextX = game.getWidth() - DIAMETER;
+        }
+
+       // Rebot amb el sostre (Eix Y)
+        if (nextY < 0) {
+        		// Forçar direcció cap a baix
+            yVel = Math.abs(yVel); 
+            //Corregim la posicó
+            nextY = 0;
+        } else if (nextY > game.getHeight() - DIAMETER) {
+        		//Fem servir el mètode gameOver()
+            game.gameOver();
+        }
 
 		//Instància de Rectangle, a l'àrea de col·lisió de la pilota
 		Rectangle ballRect = getBounds();
@@ -180,6 +185,7 @@ public class Ball {
 				game.sonido.playGolpe();
 			}
 		}
+		
 		//Corregim la posició de x
 		x = nextX;
 		//Corregim la posició de y
