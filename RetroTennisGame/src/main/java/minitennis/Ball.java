@@ -2,12 +2,16 @@ package minitennis;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Rectangle;
 import java.util.List;
+
+import javax.swing.ImageIcon;
 
 /**
  * Classe ball que gestiona el comportament de la pilota, incloent el moviment,
  * el renderitzat i la lògica de col·lisió amb parets i obstacles.
+ * 
  * @author Candela Cabello, André Medinas, Izan Perez, Daner Coria i Adrià Chenovart
  */
 public class Ball {
@@ -28,6 +32,10 @@ public class Ball {
 	private static final double INCREMENT_VELOCITAT = 1.10;
 	// Connexió amb la instància principal per accedir a l'estat del joc.
 	private Game game;
+	
+	// Atribut per guardar la imatge
+	private Image imagenPacman;
+	
 	/*
 	 * Declaració i inicialització d'atribut privat, multiplicador de velocitat que
 	 * augmenta amb el nivell
@@ -41,6 +49,11 @@ public class Ball {
 	 */
 	public Ball(Game game) {
 		this.game = game;
+		try {
+			this.imagenPacman = new ImageIcon(getClass().getResource("pacman.png")).getImage();
+		} catch (Exception e) {
+			System.out.println("No s'ha trobat la imatge pacman.png");
+		}
 	}
 
 	/**
@@ -52,6 +65,7 @@ public class Ball {
 
 	/**
 	 * Mètode que defineix la velocitat de la pilota.
+	 * 
 	 * @param speed, valor de la velocitat
 	 */
 	public void setSpeed(double speed) {
@@ -60,6 +74,7 @@ public class Ball {
 
 	/**
 	 * Mètode GETTER, obté la velocitat actual.
+	 * 
 	 * @return valor de la velocitat
 	 */
 	public double getSpeed() {
@@ -67,193 +82,173 @@ public class Ball {
 	}
 
 	/**
-	 * Mètode que calcula el moviment i gestiona les col·lisions amb 
-	 * parets, raqueta i obstacles.
+	 * Mètode que calcula el moviment i gestiona les col·lisions amb parets, raqueta
+	 * i obstacles.
+	 * 
 	 * @param obstacles, llista d'obstacles presents al joc.
 	 * @return L'objecte Obstacle que s'ha de destruir, si n'hi ha.
 	 */
 	public Obstacle move(List<Obstacle> obstacles) {
-		
-		/*Declaració i inicialització de variable, aquest calcula la següent 
-		posició segons la velocitat actual en el eix de les abcisses*/
+
+		/*
+		 * Declaració i inicialització de variable, aquest calcula la següent posició
+		 * segons la velocitat actual en el eix de les abcisses
+		 */
 		int nextX = x + (int) (xVel * speed);
-		/*Declaració i inicialització de variable, aquest calcula la següent 
-		posició segons la velocitat actual en el eix de les abcisses*/
+		/*
+		 * Declaració i inicialització de variable, aquest calcula la següent posició
+		 * segons la velocitat actual en el eix de les abcisses
+		 */
 		int nextY = y + (int) (yVel * speed);
 
-		/*Estructura condicional on avalua la lògica de rebot amb els marges 
-		 * de la finestra*/
+		/*
+		 * Estructura condicional on avalua la lògica de rebot amb els marges de la
+		 * finestra
+		 */
 		if (nextX < 0) {
 			// Forçar direcció a la dreta
-            xVel = Math.abs(xVel); 
-            //Corregim la posició
-            nextX = 0;
-        } else if (nextX > game.getWidth() - DIAMETER) {
-        	 	// Forçar direcció a l'esquerra
-            xVel = -Math.abs(xVel);
-            nextX = game.getWidth() - DIAMETER;
-        }
+			xVel = Math.abs(xVel);
+			// Corregim la posició
+			nextX = 0;
+		} else if (nextX > game.getWidth() - DIAMETER) {
+			// Forçar direcció a l'esquerra
+			xVel = -Math.abs(xVel);
+			nextX = game.getWidth() - DIAMETER;
+		}
 
-       // Rebot amb el sostre (Eix Y)
-        if (nextY < 0) {
-        		// Forçar direcció cap a baix
-            yVel = Math.abs(yVel); 
-            //Corregim la posicó
-            nextY = 0;
-        } else if (nextY > game.getHeight() - DIAMETER) {
-        		//Fem servir el mètode gameOver()
-            game.gameOver();
-        }
+		// Rebot amb el sostre (Eix Y)
+		if (nextY < 0) {
+			// Forçar direcció cap a baix
+			yVel = Math.abs(yVel);
+			// Corregim la posicó
+			nextY = 0;
+		} else if (nextY > game.getHeight() - DIAMETER) {
+			// Fem servir el mètode gameOver()
+			game.gameOver();
+		}
 
-		//Instància de Rectangle, a l'àrea de col·lisió de la pilota
+		// Instància de Rectangle, a l'àrea de col·lisió de la pilota
 		Rectangle ballRect = getBounds();
 
-		/*Estructura condicional, on es controla lògica de 
-		 * col·lisió de la raqueta */
+		/*
+		 * Estructura condicional, on es controla lògica de col·lisió de la raqueta
+		 */
 		if (ballRect.intersects(game.racquet.getBounds())) {
-			//Canvia direcció cap amunt
+			// Canvia direcció cap amunt
 			yVel = -1;
-			//Reposiciona per evitar solapament
+			// Reposiciona per evitar solapament
 			nextY = game.racquet.getTopY() - DIAMETER;
-			//Reprodueix so de rebot
+			// Reprodueix so de rebot
 			game.sonido.playGolpe();
 		}
 
-		//Instància de classe Obstacle, lògica de col·lisió detallada amb obstacles
+		// Instància de classe Obstacle, lògica de col·lisió detallada amb obstacles
 		Obstacle objetoADestruir = null;
-		
-		//Estructura iterativa FOR-EACH, que recorre tota l'Array
+
+		// Estructura iterativa FOR-EACH, que recorre tota l'Array
 		for (Obstacle o : obstacles) {
-			//Instància de Rectangle, a l'àrea de col·lisió dels obstacles
+			// Instància de Rectangle, a l'àrea de col·lisió dels obstacles
 			Rectangle obsRect = o.getBounds();
-			//Estructura condicional que avalua si la pilota intersecciona amb l'obstacle
+			// Estructura condicional que avalua si la pilota intersecciona amb l'obstacle
 			if (ballRect.intersects(obsRect)) {
-				
-				/*Declaració i inicialització de variable que calcula la distància entre 
-				 * el marge dret de la pilota i el marge esquerre de l'obstacle. 
-				 * Indica penetració des de la dreta.*/
+
+				/*
+				 * Declaració i inicialització de variable que calcula la distància entre el
+				 * marge dret de la pilota i el marge esquerre de l'obstacle. Indica penetració
+				 * des de la dreta.
+				 */
 				int pDreta = ballRect.x + ballRect.width - obsRect.x;
-				
-				/*Declaració i inicialització de variable que calcula la distància entre 
-				 * el marge dret de l'obstacle i el marge esquerre de la pilota. 
-				 * Indica penetració des de l'esquerra.*/
+
+				/*
+				 * Declaració i inicialització de variable que calcula la distància entre el
+				 * marge dret de l'obstacle i el marge esquerre de la pilota. Indica penetració
+				 * des de l'esquerra.
+				 */
 				int pEsquerra = obsRect.x + obsRect.width - ballRect.x;
-				
-				/*Declaració i inicialització de variable que calcula la penetració de la 
-				 * pilota des de la part superior de l'obstacle (el "terra" per a la pilota).*/
+
+				/*
+				 * Declaració i inicialització de variable que calcula la penetració de la
+				 * pilota des de la part superior de l'obstacle (el "terra" per a la pilota).
+				 */
 				int pTerra = ballRect.y + ballRect.height - obsRect.y;
-				
-				/*Declaració i inicialització de variable que calcula la penetració de la 
-				 * pilota des de la part inferior de l'obstacle (el "sostre" per a la pilota).*/
+
+				/*
+				 * Declaració i inicialització de variable que calcula la penetració de la
+				 * pilota des de la part inferior de l'obstacle (el "sostre" per a la pilota).
+				 */
 				int pSostre = obsRect.y + obsRect.height - ballRect.y;
 
-				/*Utilitza Math.min per trobar quina de les quatre distàncies és la més petita. 
-				 * La distància més petita indica el costat real on s'ha produït el xoc 
-				 * (el punt de contacte inicial).
+				/*
+				 * Utilitza Math.min per trobar quina de les quatre distàncies és la més petita.
+				 * La distància més petita indica el costat real on s'ha produït el xoc (el punt
+				 * de contacte inicial).
 				 */
 				int pMin = Math.min(Math.min(pDreta, pEsquerra), Math.min(pTerra, pSostre));
 
-				/*Estructura condicional que segons la situació es canvia el vector de 
-				 * velocitat de la pilota*/
+				/*
+				 * Estructura condicional que segons la situació es canvia el vector de
+				 * velocitat de la pilota
+				 */
 				if (pMin == pDreta) {
-					//Invertim la velocitat
+					// Invertim la velocitat
 					xVel = -1;
-				}
-				else if (pMin == pEsquerra) {
-					//Invertim la velocitat
+				} else if (pMin == pEsquerra) {
+					// Invertim la velocitat
 					xVel = 1;
-				}
-				else if (pMin == pTerra) {
-					//Invertim la velocitat
+				} else if (pMin == pTerra) {
+					// Invertim la velocitat
 					yVel = -1;
-				}
-				else if (pMin == pSostre) {
-					//Invertim la velocitat
+				} else if (pMin == pSostre) {
+					// Invertim la velocitat
 					yVel = 1;
 				}
 
-				//Crida al mètode de l'obstacle per reduir la seva vida.
+				// Crida al mètode de l'obstacle per reduir la seva vida.
 				o.ferDany();
-				
-				/*Estructura condicional que si la vida de l'obstacle arriba a zero, 
-				 * s'assigna a una variable per eliminar-lo de la llista del joc
+
+				/*
+				 * Estructura condicional que si la vida de l'obstacle arriba a zero, s'assigna
+				 * a una variable per eliminar-lo de la llista del joc
 				 */
 				if (o.getVida() <= 0)
-					//Indiquem el osbtacle
+					// Indiquem el osbtacle
 					objetoADestruir = o;
-				//Reproducció de so de col·lisió
+				// Reproducció de so de col·lisió
 				game.sonido.playGolpe();
 			}
 		}
-		
-		//Corregim la posició de x
+
+		// Corregim la posició de x
 		x = nextX;
-		//Corregim la posició de y
+		// Corregim la posició de y
 		y = nextY;
-		
-		//Retornem l'objecte que hem de destruir
+
+		// Retornem l'objecte que hem de destruir
 		return objetoADestruir;
 	}
 
 	/**
-	 * Mètode que dibuixa la representació gràfica de la pilota (Pac-Man) a la pantalla.
-	 * L'orientació de la boca canvia dinàmicament en funció del vector de moviment.
+	 * Mètode que dibuixa la representació gràfica de la pilota (Pac-Man) a la
+	 * pantalla. L'orientació de la boca canvia dinàmicament en funció del vector de
+	 * moviment.
+	 * 
 	 * @param g, El context gràfic 2D utilitzat per pintar el component
 	 */
 	public void paint(Graphics2D g) {
-		//Mitjançant el mètode setColor() definim el color groc 
-		g.setColor(Color.YELLOW);
 
-		/*Declaració i inicialització de variable per Lògica per calcular 
-		l'orientació de la boca segons la direcció (xVel, yVel) */
-		int angleInici = 0;
-		
-		/*Estructura condicional que realitza combinacions de direccions per determinar 
-		cap on mira el personatge*/
-		if (xVel > 0 && yVel > 0) {
-			//Moviment diagonal cap a baix-dreta
-			angleInici = 315; 
+		if (imagenPacman != null) {
+			// Dibuixa la imatge reescalada al diàmetre definit
+			g.drawImage(imagenPacman, x, y, DIAMETER, DIAMETER, null);
+		} else {
+			// Si la imatge falla, dibuixa un cercle groc per evitar que no es vegi res
+			g.fillOval(x, y, DIAMETER, DIAMETER);
 		}
-		else if (xVel > 0 && yVel < 0) {
-			//Moviment diagonal cap a Dalt-Dreta
-			angleInici = 45; 
-		}
-		else if (xVel < 0 && yVel > 0) {
-			//Moviment diagonal cap a Baix-Esquerra
-			angleInici = 225;
-		}
-		else if (xVel < 0 && yVel < 0) {
-			//Moviment diagonal cap a Dalt-Esquerra
-			angleInici = 135; 
-		}
-		else if (xVel > 0) {
-			//Moviment horitzontal a la dreta
-			angleInici = 30;
-		}
-		else {
-			//Moviment horitzontal a l'esquerra
-			angleInici = 210;
-		}
-
-		/**
-	     * Dibuixem el cos del personatge:
-	     * fillArc rep: (x, y, ample, alt, angle inici, extensió de l'angle)
-	     * Utilitzem 300 graus d'extensió per deixar un espai buit de 60 graus per la boca.
-	     */
-		g.fillArc(x, y, DIAMETER, DIAMETER, angleInici, 300);
-
-		// Canviem el color a negre per dibuixar els detalls
-		g.setColor(Color.BLACK);
-		/**
-	     * Dibuixem l'ull del personatge:
-	     * El posicionem de forma relativa a la 'x' i 'y' actuals perquè es mogui amb el cos.
-	     * Les mides de l'ull són fixes (5x5 píxels).
-	     */
-		g.fillOval(x + (DIAMETER / 2), y + (DIAMETER / 5), 5, 5);
 	}
 
 	/**
-	 * Mètode que retorna l'àrea rectangular de la pilota per a càlculs de col·lisió.
+	 * Mètode que retorna l'àrea rectangular de la pilota per a càlculs de
+	 * col·lisió.
+	 * 
 	 * @return Objecte Rectangle.
 	 */
 	public Rectangle getBounds() {
