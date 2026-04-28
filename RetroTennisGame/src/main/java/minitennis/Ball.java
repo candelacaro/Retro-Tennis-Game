@@ -1,5 +1,4 @@
 package minitennis;
-
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -84,21 +83,21 @@ public class Ball {
 		/*Estructura condicional on avalua la lògica de rebot amb els marges 
 		 * de la finestra*/
 		if (nextX < 0) {
-			// Rebot paret esquerra
-			xVel = 1;
-		}
-		if (nextX > game.getWidth() - DIAMETER) {
-			// Rebot paret dreta
-			xVel = -1;
-		}
-		if (nextY < 0) {
-			// Rebot sostre
-			yVel = 1;
-		}
-		if (nextY > game.getHeight() - DIAMETER) {
-			// Si toca el terra, acaba la partida
-			game.gameOver();
-		}
+	           xVel = Math.abs(xVel); // Forçar direcció a la dreta
+	           nextX = 0;
+	       } else if (nextX > game.getWidth() - DIAMETER) {
+	           xVel = -Math.abs(xVel); // Forçar direcció a l'esquerra
+	           nextX = game.getWidth() - DIAMETER;
+	       }
+
+		  // Rebot amb el sostre (Eix Y)
+	       if (nextY < 0) {
+	           yVel = Math.abs(yVel); // Forçar direcció cap a baix
+	           nextY = 0;
+	       } else if (nextY > game.getHeight() - DIAMETER) {
+	           game.gameOver();
+	       }
+
 
 		//Instància de Rectangle, a l'àrea de col·lisió de la pilota
 		Rectangle ballRect = getBounds();
@@ -195,56 +194,23 @@ public class Ball {
 	 * @param g, El context gràfic 2D utilitzat per pintar el component
 	 */
 	public void paint(Graphics2D g) {
-		//Mitjançant el mètode setColor() definim el color groc 
-		g.setColor(Color.YELLOW);
+	       g.setColor(Color.YELLOW);
+	      
+	       // Calculem l'angle de la boca segons la direcció
+	       int angleInici = 0;
+	       if (xVel > 0 && yVel > 0) angleInici = 315; // Baix-Dreta
+	       else if (xVel > 0 && yVel < 0) angleInici = 45;  // Dalt-Dreta
+	       else if (xVel < 0 && yVel > 0) angleInici = 225; // Baix-Esquerra
+	       else if (xVel < 0 && yVel < 0) angleInici = 135; // Dalt-Esquerra
+	       else if (xVel > 0) angleInici = 30;
+	       else angleInici = 210;
+	       // Dibuixem el cos (un arc de 300 graus deixa 60 per la boca)
+	       g.fillArc(x, y, DIAMETER, DIAMETER, angleInici, 300);
+	       // Dibuixem l'ull
+	       g.setColor(Color.BLACK);
+	       g.fillOval(x + (DIAMETER/2), y + (DIAMETER/5), 5, 5);
+	   }
 
-		/*Declaració i inicialització de variable per Lògica per calcular 
-		l'orientació de la boca segons la direcció (xVel, yVel) */
-		int angleInici = 0;
-		
-		/*Estructura condicional que realitza combinacions de direccions per determinar 
-		cap on mira el personatge*/
-		if (xVel > 0 && yVel > 0) {
-			//Moviment diagonal cap a baix-dreta
-			angleInici = 315; 
-		}
-		else if (xVel > 0 && yVel < 0) {
-			//Moviment diagonal cap a Dalt-Dreta
-			angleInici = 45; 
-		}
-		else if (xVel < 0 && yVel > 0) {
-			//Moviment diagonal cap a Baix-Esquerra
-			angleInici = 225;
-		}
-		else if (xVel < 0 && yVel < 0) {
-			//Moviment diagonal cap a Dalt-Esquerra
-			angleInici = 135; 
-		}
-		else if (xVel > 0) {
-			//Moviment horitzontal a la dreta
-			angleInici = 30;
-		}
-		else {
-			//Moviment horitzontal a l'esquerra
-			angleInici = 210;
-		}
-
-		/**
-	     * Dibuixem el cos del personatge:
-	     * fillArc rep: (x, y, ample, alt, angle inici, extensió de l'angle)
-	     * Utilitzem 300 graus d'extensió per deixar un espai buit de 60 graus per la boca.
-	     */
-		g.fillArc(x, y, DIAMETER, DIAMETER, angleInici, 300);
-
-		// Canviem el color a negre per dibuixar els detalls
-		g.setColor(Color.BLACK);
-		/**
-	     * Dibuixem l'ull del personatge:
-	     * El posicionem de forma relativa a la 'x' i 'y' actuals perquè es mogui amb el cos.
-	     * Les mides de l'ull són fixes (5x5 píxels).
-	     */
-		g.fillOval(x + (DIAMETER / 2), y + (DIAMETER / 5), 5, 5);
-	}
 
 	/**
 	 * Mètode que retorna l'àrea rectangular de la pilota per a càlculs de col·lisió.
