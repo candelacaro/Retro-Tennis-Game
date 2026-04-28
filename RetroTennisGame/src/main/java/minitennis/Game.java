@@ -33,7 +33,7 @@ public class Game extends JPanel {
 	private long startTime = System.currentTimeMillis();
 	private long lastPointUpdate = System.currentTimeMillis();
 	private static String playerName;
-	private Image fondo;
+	private Image [] fondos = new Image[6];
 
 	public Game(String playerName, int selectedLevel) {
 
@@ -50,8 +50,12 @@ public class Game extends JPanel {
 		}
 
 		try {
-			fondo = new ImageIcon(getClass().getResource("fondovideojuego.jpg")).getImage();
-		} catch (Exception e) {
+			fondos[0] = new ImageIcon(getClass().getResource("fondovideojuego.jpg")).getImage();
+			fondos[1] = new ImageIcon(getClass().getResource("fondovideojuego2.jpg")).getImage();
+			fondos[2] = new ImageIcon(getClass().getResource("fondovideojuego3.jpg")).getImage();
+			fondos[3] = new ImageIcon(getClass().getResource("fondovideojuego4.jpg")).getImage();
+			fondos[4] = new ImageIcon(getClass().getResource("fondovideojuego5.jpg")).getImage();
+			fondos[5] = new ImageIcon(getClass().getResource("fondovideojuego6.jpg")).getImage();		} catch (Exception e) {
 			System.out.println("No se pudo cargar la imagen de fondo.");
 		}
 
@@ -142,7 +146,7 @@ public class Game extends JPanel {
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D) g;
-		g2d.drawImage(fondo, 0, 0, getWidth(), getHeight(), this);
+		g2d.drawImage(getFondoActual(), 0, 0, getWidth(), getHeight(), this);
 
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -171,6 +175,20 @@ public class Game extends JPanel {
 			}
 		}
 	}
+	
+	// Va cambiant el fons cada vegada que pasen 5 nivells
+		private Image getFondoActual() {
+			final int CADA_CINC_NIVELL = 5;
+			
+			int index = (level - 1)/CADA_CINC_NIVELL;
+			
+			if(index >= fondos.length) {
+				
+				index = fondos.length - 1;
+			}
+			
+			return fondos[index];
+		}
 
 	private void actualitzarObstacles(int nivellActual) {
 		obstacles.clear();
