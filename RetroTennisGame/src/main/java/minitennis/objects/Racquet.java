@@ -15,13 +15,16 @@ public class Racquet {
 	// Defineixen l'estat immutable de les dimensions i la posició vertical de la raqueta
 	
 	// Posició fixa en l'eix d'ordenades
-	private static final int Y = 330;
+	private static final int Y_POSITION = 330;
 	
 	// Amplitud horitzontal de l'objecte
 	private static final int WIDTH = 60;
 	
 	// Altura vertical de l'objecte
 	private static final int HEIGHT = 10;
+	
+	//Velocitat de la pala
+	private static final int SPEED_RACQUET = 6;
 	
 	// Atributs d'instància
 	
@@ -71,7 +74,7 @@ public class Racquet {
 	}
 
 	public static int getY() {
-		return Y;
+		return Y_POSITION;
 	}
 
 	public static int getWidth() {
@@ -130,7 +133,7 @@ public class Racquet {
     */
 	public void paint(Graphics2D g2d) {
 		g2d.setColor(Color.MAGENTA);
-		g2d.fillRect(x, Y, WIDTH, HEIGHT);
+		g2d.fillRect(x, Y_POSITION, WIDTH, HEIGHT);
 	}
 	
 	/**
@@ -153,13 +156,13 @@ public class Racquet {
 		if(e.getKeyCode() == KeyEvent.VK_LEFT) {
 			
 			// Decrement vector cap a l'esquerra
-			xVelocitat = -6;
+			xVelocitat = -SPEED_RACQUET;
 		}
 		
 		if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
 			
 			//Increment vector cap a la dreta
-			xVelocitat = 6;
+			xVelocitat = SPEED_RACQUET;
 		}
 		
 	}
@@ -169,14 +172,14 @@ public class Racquet {
     * * @return Una nova instància de Rectangle que defineix el Bounding Box de la raqueta.
     */
 	public Rectangle getBounds() {
-		return new Rectangle(x, Y, WIDTH, HEIGHT);
+		return new Rectangle(x, Y_POSITION, WIDTH, HEIGHT);
 	}
 	/**
     * Mètode d'accés per a la coordenada superior de l'objecte.
     * * @return El valor de la constant Y.
     */
 	public int getTopY() {
-		return Y;
+		return Y_POSITION;
 	}
 	
 }
