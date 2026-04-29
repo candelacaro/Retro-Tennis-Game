@@ -2,7 +2,11 @@ package minitennis.db;
 
 import java.sql.*;
 /**
- * Classe per gestionar la connexió amb MySQL i les operacions de lectura i escriptura de partides.
+ * Definició de la classe Connexio.
+ * Aquesta classe actua com connector del joc amb la base de dades.
+ * La seva funció és connectar la Base de Dades MySQL al Eclipse, emmagatzemant les puntuacions	
+ * 
+ * @autor André Medinas, Candela Cabello, Daner Coria, Izan Perez i Adrià Chenovart
  */
 public class Connexio {// Objecte que manté la connexió activa amb la BD
 	// Constructor: s'executa en crear l'objecte i estableix el primer intent de connexió

@@ -1,5 +1,13 @@
 package minitennis.utils;
 
+/**
+ * Definició de la classe Utils.
+ * Aquesta classe actua com emmagatzemador de variables final
+ * Hi han variables final que et repeteixen en les classes, doncs només refereciant
+ * les final d'aquesta classe no caldria tornar a declarar les final
+ * 
+ * @autor André Medinas, Candela Cabello, Daner Coria, Izan Perez i Adrià Chenovart
+ */
 public class Utils {
 	
 	//afegir public final static que siguin comunes

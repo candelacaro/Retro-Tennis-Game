@@ -3,7 +3,12 @@ package minitennis.language;
 import minitennis.utils.Utils;
 
 /**
+ * Definició de la classe ControlLanguage.
+ * Aquesta classe actua com donar una definició per cada opció escollida.
+ * La seva funció és depenent de l'opció d'idioma escollida (àngles, català i castellà)
+ * doncs retorna les seves definicions
  * 
+ * @autor André Medinas, Candela Cabello, Daner Coria, Izan Perez i Adrià Chenovart
  */
 public class ControlLanguage {
 	// Defineixen els identificadors d'idioma suportats per l'aplicació

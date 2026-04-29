@@ -8,132 +8,203 @@ import minitennis.main.Game;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-//Classe que gestiona el menú per introduir el nom abans de jugar
+
+
+/**
+ * Definició de la classe NombreUsuarioMenu.
+ * Aquesta classe actua com finestra al moment d'afegir un nom d'usuari.
+ * La seva funció es rebre el nombre afegit amb opció de continuar per començar a jugar
+ * i l'altre es per tornar al menu principal
+ * 
+ * @autor André Medinas, Candela Cabello, Daner Coria, Izan Perez i Adrià Chenovart
+ */
 public class NombreUsuarioMenu extends JPanel {
-	// Referència al sistema de traducció
-    private ControlLanguage controlLang;
- // Guarda el nivell seleccionat prèviament
+
+	// Declarem i inicialitzem els parametres
+	private ControlLanguage controlLang;
     private int nivel;
- // Variable dinàmica per construir el nom
     private StringBuilder nombre = new StringBuilder();
- // Imatge de fons del menú
     private Image fondo;
- // Constructor que rep l'idioma i el nivell seleccionat
+    /**
+     * Rep l'idioma i el nivell seleccionat
+     * 
+     * @param controlLang el idioma seleccionat
+     * @param nivel el nivel seleccionat
+     */
     public NombreUsuarioMenu(ControlLanguage controlLang, int nivel) {
+    	// Els parametres seleccionats canvien els valors
         this.controlLang = controlLang;
         this.nivel = nivel;
+        // Carreguem l'imatge gif 
         try {
-        	// Carrega l'animació GIF de fons des dels recursos
             fondo = new ImageIcon(getClass().getResource("/Imatge/nombreUsuario.gif")).getImage();
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        	// No retornem res, ja que la ruta es correcta
+        }
 
-        setBackground(Color.BLACK);// Color de fons de seguretat
-        setFocusable(true);// Permet que el panell rebi esdeveniments de teclat
-     // Escoltador de tecles per gestionar l'escriptura
+        // En cas de que la imatge no sigui detectada, es posa l'imatge en negre
+        setBackground(Color.BLACK);
+        // Permet que el panell detecti el teclat
+        setFocusable(true);
+        // Afegim un escoltador de teclat
         addKeyListener(new KeyAdapter() {
+        	
+        	/**
+        	 * Afegim un metode per cada vegada que polsem un teclat i es sobreescriu
+        	 */
             @Override
             public void keyPressed(KeyEvent e) {
-            	// Si es prem ENTER i s'ha escrit alguna cosa, es confirma el nom i comença el joc
+            	// Comprova si la tecla polsada es Enter
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                	// Si el nom no esta buit doncs confirma i comença el joc
                     if (nombre.length() > 0) {
                         confirmarYEmpezar();
                     }
                 } 
-             // Si es prem ESC, torna al menú principal
+                // Si polsem la tecla "Esc" crida al metode per tornar al menu
                 else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
                     volverAlMenuPrincipal();
                 }
-             // Si es prem BACKSPACE, s'esborra l'últim caràcter
+                // Si polsem la tecla de esborrar
                 else if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+                	// Esborrem la ultima lletra afegida
                     if (nombre.length() > 0) {
                         nombre.deleteCharAt(nombre.length() - 1);
                     }
                 } 
-             // Si el nom té menys de 12 caràcters, s'afegeix la lletra o número premut
-                else if (nombre.length() < 12) {
+                // Si el nom no arriba al limit de 12 caracter
+                else if (nombre.length() < 12) {//DECLARAR FINAL
+                	// Obtenim el caracter fisic de la tecla
                     char c = e.getKeyChar();
-                 // Filtre per permetre només lletres, números o espais
-                    if (Character.isLetterOrDigit(c) || c == ' ') {
+                    // Comprova si es una lletra, nombre o espai
+                    if (Character.isLetterOrDigit(c) || c == ' ') { // DECLARAR FINAL///////////////////////
                         nombre.append(c);
                     }
                 }
-             // Actualitza la pantalla per mostrar el nom mentre s'escriu
+                // Actualitza la pantalla per mostrar el nom mentre s'escriu
                 repaint(); 
             }
         });
     }
- // Mètode per tornar al menú principal
+    /**
+     * Tornem al menú principal
+     */
     private void volverAlMenuPrincipal() {
+    	// Obtenim la finestra principal
         JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
+        // Si la finestra es diferent a null
         if (frame != null) {
+        	// Creem una nova instancia
             MenuRetro menuRetro = new MenuRetro(controlLang);
+            // Netejem el contingut de la finestra
             frame.getContentPane().removeAll();
+            // Afegim el menu principal
             frame.add(menuRetro);
+            // Refresca la seva jerarquia
             frame.revalidate();
+            // I dibuixem de nou
             frame.repaint();
+            // Passa el polsat al teclar al nou menu
             menuRetro.requestFocusInWindow();
         }
     }
- // Mètode per confirmar el nom i llançar la finestra del joc
+    /**
+     * Confirmem el nom i llançar la finestra del joc
+     */
     private void confirmarYEmpezar() {
+    	// Obtenim la finestra principal
         JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
+        // Si la finestra es diferent a null
         if (frame != null) {
+        	// Passem el fram, després el nom i el nivell
             lanzarJuego(frame, nombre.toString(), nivel);
         }
     }
- // Crea la finestra definitiva del joc i inicia el bucle
+    /**
+     * Crea la finestra definitiva del joc i inicia el bucle
+     * 
+     * @param frame es la finestra actual on es troba
+     * @param nom es el nom que li anirem a declarar
+     * @param niv es el nivell que seleccionem
+     */
     private void lanzarJuego(JFrame frame, String nom, int niv) {
-        frame.dispose(); // Tanca el menú de selecció
+    	// Tanquem el menu de selccio
+        frame.dispose(); 
+        // Obre la finestra de joc
         JFrame gameFrame = new JFrame("Retro Tenis - " + nom);
-        Game game = new Game(nom, niv, null); // Instància de la lògica del joc
+        // Crea el component del joc amb els parametres
+        Game game = new Game(nom, niv, null);
+        // Afegim el joc dins de la finestra
         gameFrame.add(game);
+        // Definim la seva mida
         gameFrame.setSize(300, 400);
-        gameFrame.setLocationRelativeTo(null); // Centra la finestra a la pantalla
+        // Posicionem la finestra al mig de la pantalla
+        gameFrame.setLocationRelativeTo(null);
+        // Tanquem tot el procés al moment de soritr
         gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        // Fem visible la finestra
         gameFrame.setVisible(true);
-     // Bucle principal: cada 10ms mou els objectes i torna a dibuixar
+        // Creem un temporitzador per executar el bucle de 100 vegades per segon
         new Timer(10, e -> {
+        	// Actualitza la posició de la pilot i raqueta
             game.move();
+            // Dibuixa els nous moviments
             game.repaint();
+            // Comença el temporitzador
         }).start();
-        game.requestFocusInWindow();// Posa el focus en el joc per poder moure la pala
+        // Activa el teclat per poder jugar
+        game.requestFocusInWindow();
     }
- // Mètode per dibuixar la interfície gràfica del menú
+    
+	 /**
+	  * Dibuixem la interfície gràfica del menu
+	  */	
     @Override
     protected void paintComponent(Graphics g) {
+    	// Cridem al primer metode per netejar el panell
         super.paintComponent(g);
+        // Les convertim a funcions avançades
         Graphics2D g2 = (Graphics2D) g;
-     // Activa el suavitzat per a un text més nítid
+        // Millorem per tenir les lletres nitides
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-     // Dibuixa la imatge de fons amb una capa negra semi-transparent a sobre
+        // Si el fons es diferent a null
         if (fondo != null) {
+        	// Dibuixem el seu fons
             g2.drawImage(fondo, 0, 0, getWidth(), getHeight(), this);
+            // Triem el color negre
             g2.setColor(new Color(0, 0, 0, 180));
+            // Pintem un rectangle sobre el fons
             g2.fillRect(0, 0, getWidth(), getHeight());
         }
 
-     // Títol principal traduït dinàmicament
+        // Al titol principal te el color groc
         g2.setColor(Color.YELLOW);
+        // Afegim la seva font i el tamany
         g2.setFont(new Font("Monospaced", Font.BOLD, 20));
+        // I escrivim el text traduit
         g2.drawString(controlLang.get("nom_usuari"), 25, 100);
 
-     // Dibuixa el rectangle blanc on s'escriu el nom
+        // Es el color de les opcions que no estan seleccionades
         g2.setColor(Color.WHITE);
+        // Dibuixem el seu contorn 
         g2.drawRect(30, 150, 240, 40);
         
-     // Dibuixa el nom escrit i un cursor que parpelleja segons el temps del sistema
+        // Modifiquem per dibuixar el nom i el cursor independentment
         g2.setFont(new Font("Monospaced", Font.BOLD, 20));
+        // Un efecte visual per indicar la posició de la lletra que apareix cada mig segon
         String cursor = (System.currentTimeMillis() % 1000 < 500) ? "_" : "";
+        // Escriu els caracters afegits més el "_"
         g2.drawString(nombre.toString() + cursor, 45, 178);
 
-     // Guia inferior d'accions traduïda
+        // Configura la font a les instruccions de la part inferior
         g2.setFont(new Font("Monospaced", Font.PLAIN, 11));
+        // Li donem el color gris
         g2.setColor(Color.GRAY);
         
-     // Mostra l'opció per començar usant la traducció del botó acceptar
+        // Dibuixem la introducció de la tecla Enter
         g2.drawString("ENTER: " + controlLang.get("boto_acceptar"), 30, 340);
         
-     // Mostra l'opció per cancel·lar en color vermellós
+        // I mostrem la tecla "Esc" per tornar al menu
         g2.setColor(new Color(255, 100, 100));
         g2.drawString("ESC: " + controlLang.get("sortir"), 30, 360);
     }

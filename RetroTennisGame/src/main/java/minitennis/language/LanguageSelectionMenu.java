@@ -7,57 +7,77 @@ import minitennis.menu.MenuRetro;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-//Definició de la classe que crea el panell de selecció d'idioma
+
+/**
+ * Definició de la classe LanguageSelectionMenu.
+ * Aquesta classe actua com fineestra per seleccionar el idioma
+ * La seva funció es mostrar a la finestra les 3 opcions d'idioma oferides
+ * 
+ * @autor André Medinas, Candela Cabello, Daner Coria, Izan Perez i Adrià Chenovart
+ */
 public class LanguageSelectionMenu extends JPanel {
 	
+	// Declarem els String en final
 	private final String IDIOMA_ES = "ESPAÑOL";
 	private final String IDIOMA_EN = "ENGLISH";
 	private final String IDIOMA_CAT = "CATALÀ";
 	
+	// Declarem els int en final
 	private final int ANGLES = 0;
 	private final int CASTELLA = 1;
 	private final int CATALA = 2;
 	
 	// Llista d'opcions disponibles
     private String[] idiomas = {IDIOMA_EN, IDIOMA_ES, IDIOMA_CAT};
-    // Índex per saber quina opció està ressaltada
+    // Index per saber quina opció està ressaltada
     private int seleccion = 0;
     // Variable per guardar la imatge de fons del menu
     private Image fondo;
-    // Constructor de la classe
     
-    
+    /**
+     * Constructor que configura el panell inicial
+     */
     public LanguageSelectionMenu() {
         try {
-        	// Intenta carregar la imatge des de la carpeta de recursos del projecte
+        	// Intenta carregar el gif pel fons 
             fondo = new ImageIcon(getClass().getResource("/Imatge/fondoMenu.gif")).getImage();
-        } catch (Exception e) { }// Si hi ha un error en la càrrega, continua sense imatge
-        // Estableix un color de fons negre per defecte
+        } catch (Exception e) { 
+        	// Si no detecta cap imatge, continua sense res
+        }
+        // En cas que no hagi imatge posa el color de fons negre
         setBackground(Color.BLACK);
-        // Permet que aquest panell capti les pulsacions del teclat
+        // Permet que aquest panell capti el teclat
         setFocusable(true);
-        // Afegeix un "listener" per detectar quan l'usuari prem una tecla
+        // Afegeix un escoltador per cada vegada que polsem el teclat
         addKeyListener(new KeyAdapter() {
+        	
+        	/**
+        	 * Metode actuar per cada tecla polsada
+        	 */
             @Override
             public void keyPressed(KeyEvent e) {
-            	// Si es prem la fletxa amunt, retrocedeix en la llista de forma circular
+            	// Si es prem la fletxa amunt
                 if (e.getKeyCode() == KeyEvent.VK_UP) {
                     seleccion = (seleccion - 1 + idiomas.length) % idiomas.length;
-                 // Si es prem la fletxa avall, avança en la llista de forma circular
+                 // Si es prem la fletxa avall
                 } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
                     seleccion = (seleccion + 1) % idiomas.length;
-                 // Si es prem la tecla Enter, confirma l'idioma seleccionat
+                 // Si es prem la tecla Enter
                 } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                     confirmarIdioma();
                 }
-                repaint(); // Actualitza visualment el panell per reflectir el canvi de selecció
+             // Actualitza visualment el panell per mostrar el canvi d'opcio
+                repaint(); 
             }
         });
     }
-    // Mètode per aplicar l'idioma i canviar al menú principal
+    /**
+     * Mètode per aplicar l'idioma i canviar al menú principal
+     */
     private void confirmarIdioma() {
-        ControlLanguage cl = new ControlLanguage();// Instància de l'objecte que controla l'idioma
-     // Assigna l'idioma segons l'índex seleccionat
+    	// Instància de l'objecte que controla l'idioma
+        ControlLanguage cl = new ControlLanguage();
+        // Assigna l'idioma seleccionat per cada idioma
         if (seleccion == ANGLES) {
         		cl.setIdiomaActual(ControlLanguage.ANGLES);
         }
@@ -67,15 +87,22 @@ public class LanguageSelectionMenu extends JPanel {
         else if (seleccion == CATALA) {
         		cl.setIdiomaActual(ControlLanguage.CATALA);
         }
-     // Busca la finestra principal (JFrame) que conté aquest panell
+        // Localitzem la finestra on es troba aquest panell
         JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
+        // Si la finestra no es nula
         if (frame != null) {
-            MenuRetro menuRetro = new MenuRetro(cl); // Crea el menú principal amb l'idioma escollit
-            frame.getContentPane().removeAll();// Elimina el contingut actual de la finestra
-            frame.add(menuRetro);// Afegeix el nou menú a la finestra
-            frame.revalidate();// Refà el disseny dels components
-            frame.repaint();// Torna a dibuixar la finestra
-            menuRetro.requestFocusInWindow();// Demana el focus del teclat per al nou menú
+        	// Crea el menú principal amb l'idioma escollit
+            MenuRetro menuRetro = new MenuRetro(cl); 
+            // Elimina el contingut actual de la finestra
+            frame.getContentPane().removeAll();
+            // Afegeix el nou menú a la finestra
+            frame.add(menuRetro);
+            // Refà el disseny dels components
+            frame.revalidate();
+            // Torna a dibuixar la finestra
+            frame.repaint();
+            // Deaman el focus per teclat
+            menuRetro.requestFocusInWindow();
         }
     }
     
@@ -84,46 +111,63 @@ public class LanguageSelectionMenu extends JPanel {
      */
     @Override
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g); // Crida al mètode original de la superclasse
-        Graphics2D g2 = (Graphics2D) g; // Converteix a Graphics2D per a funcions avançades
-     // Activa el suavitzat de vores per a una millor qualitat visual
+    	// Crida al mètode original de la superclasse
+        super.paintComponent(g); 
+        // Converteix a funcions avançades
+        Graphics2D g2 = (Graphics2D) g; 
+        // Activa el suavitzat de vores per a una millor qualitat visual
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-     // Si la imatge de fons s'ha carregat, la dibuixa i hi posa un filtre fosc
+        // Si la imatge de fons s'ha carregat, la dibuixa i aplica un fons fosc
         if (fondo != null) {
-            g2.drawImage(fondo, 0, 0, getWidth(), getHeight(), this);// Dibuixa el fons
-            g2.setColor(new Color(0, 0, 0, 180)); // Defineix un color negre semi-transparent
-            g2.fillRect(0, 0, getWidth(), getHeight()); // Dibuixa un rectangle fosc a sobre
+        	// Dibuixa el fons
+            g2.drawImage(fondo, 0, 0, getWidth(), getHeight(), this);
+            // Defineix un color negre semi-transparent
+            g2.setColor(new Color(0, 0, 0, 180)); 
+            // Dibuixa un rectangle fosc a sobre
+            g2.fillRect(0, 0, getWidth(), getHeight()); 
         }
 
-     // Lògica per mostrar el títol segons l'idioma ressaltat (dinàmic)
+        // Lògica per mostrar el títol de "Seleccionar" depenent de l'idioma escollit
         String titulo;
-        if (seleccion == 0) titulo = "SELECT";
-        else if (seleccion == 1) titulo = "SELECCIONAR";
-        else titulo = "SELECCIONAR "; // Catalán es igual en este caso, o "TRIA IDIOMA"
+        // Depenent de l'idioma que anirem a escollir canvis el titol
+        if (seleccion == 0) titulo = "SELECT"; // FINALSS//////////
+        else if (seleccion == 1) titulo = "SELECCIONAR"; // FINALSS/////////////
+        else titulo = "SELECCIONAR "; //FINALSSSSS/////
 
-        g2.setColor(Color.YELLOW); // Color groc per al títol
-        g2.setFont(new Font("Monospaced", Font.BOLD, 26));// Font tipus retro i mida	
-        g2.drawString(titulo, 25, 80);// Dibuixa el títol a la posició indicada
+        // Afegim el color de titol a groc
+        g2.setColor(Color.YELLOW);
+        // Li asignem al seva font i tamany
+        g2.setFont(new Font("Monospaced", Font.BOLD, 26));	
+        // Escriu el titol a la part superior 
+        g2.drawString(titulo, 25, 80);
 
-     // Bucle per dibuixar les opcions d'idioma en pantalla
+        // Fem un bucle per escriure les tres opcions d'idioma
         g2.setFont(new Font("Monospaced", Font.BOLD, 20));
         for (int i = 0; i < idiomas.length; i++) {
+        	// si la posicio d'idioma es igual a la seleccio d'idioma
             if (i == seleccion) {
-                g2.setColor(Color.CYAN);// Color cian per a l'opció que estem marcant
-                g2.drawString("> " + idiomas[i], 60, 180 + i * 50);// Indicador de selecció
+            	// Canvia el color a Cian
+                g2.setColor(Color.CYAN);
+                // Indica la posició actual amb un ">"
+                g2.drawString("> " + idiomas[i], 60, 180 + i * 50);
+            // En cas que no estigui seleccionat per teclat
             } else {
-                g2.setColor(Color.WHITE);// Color blanc per a la resta d'opcions
+            	// Es posen en color blanc
+                g2.setColor(Color.WHITE);
+                // No afegim res a les posicions
                 g2.drawString("  " + idiomas[i], 60, 180 + i * 50);
             }
         }
         
-     // Dibuixa una petita guia d'ús a la part inferior
+        // Li donem una font i tamny
         g2.setFont(new Font("Monospaced", Font.PLAIN, 11));
+        // Asignem el color gris
         g2.setColor(Color.GRAY);
-     // El text de la guia també canvia segons la selecció actual
+        // El text de guia canvia depenent de l'idioma
         String guia = (seleccion == 0) ? "UP/DOWN to move, ENTER to select" : 
                      (seleccion == 1) ? "Flechas para mover, ENTER para elegir" : 
                                        "Fletxes per moure, ENTER per triar";
-        g2.drawString(guia, 20, 360);// Dibuixa la guia inferior
+        // S'aplica a la part inferior
+        g2.drawString(guia, 20, 360);
     }
 }
