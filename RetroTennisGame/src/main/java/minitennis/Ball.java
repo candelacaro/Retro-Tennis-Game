@@ -46,7 +46,7 @@ public class Ball {
 	public Ball(Game game) {
 		this.game = game;
 		try {
-			this.imagenPacman = new ImageIcon(getClass().getResource("pacman.png")).getImage();
+			this.imagenPacman = new ImageIcon(getClass().getResource("/Imatge/pacman.png")).getImage();
 		} catch (Exception e) {
 			System.out.println("No s'ha trobat la imatge pacman.png");
 		}

@@ -89,14 +89,14 @@ public class Game extends JPanel {
 			 * Localitza, carrega i extreu la imatge del fitxer de fons per a la seva
 			 * posterior renderització en el panell del joc.
 			 */
-			fons = new ImageIcon(getClass().getResource("fondovideojuego.jpg")).getImage();
+			fons = new ImageIcon(getClass().getResource("/Imatge/fondovideojuego.jpg")).getImage();
 			// Càrrega de l'array de fondos
-			fondos[0] = new ImageIcon(getClass().getResource("fondovideojuego.jpg")).getImage();
-			fondos[1] = new ImageIcon(getClass().getResource("fondovideojuego2.jpg")).getImage();
-			fondos[2] = new ImageIcon(getClass().getResource("fondovideojuego3.jpg")).getImage();
-			fondos[3] = new ImageIcon(getClass().getResource("fondovideojuego4.jpg")).getImage();
-			fondos[4] = new ImageIcon(getClass().getResource("fondovideojuego5.jpg")).getImage();
-			fondos[5] = new ImageIcon(getClass().getResource("fondovideojuego6.jpg")).getImage();
+			fondos[0] = new ImageIcon(getClass().getResource("/Imatge/fondovideojuego.jpg")).getImage();
+			fondos[1] = new ImageIcon(getClass().getResource("/Imatge/fondovideojuego2.jpg")).getImage();
+			fondos[2] = new ImageIcon(getClass().getResource("/Imatge/fondovideojuego3.jpg")).getImage();
+			fondos[3] = new ImageIcon(getClass().getResource("/Imatge/fondovideojuego4.jpg")).getImage();
+			fondos[4] = new ImageIcon(getClass().getResource("/Imatge/fondovideojuego5.jpg")).getImage();
+			fondos[5] = new ImageIcon(getClass().getResource("/Imatge/fondovideojuego6.jpg")).getImage();
 		} catch (Exception e) {
 			// Si es produiex alguna mena d'excepció la capturem i mostrem el missatge
 			System.out.println("No se pudo cargar la imagen de fondo.");

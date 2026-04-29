@@ -32,14 +32,18 @@ public class Sound {
       }
   }
   private AudioClip cargarSonido(String archivo) {
-      try {
-          URL url = getClass().getResource(archivo);
-          if (url == null) return null;
-          return Applet.newAudioClip(url);
-      } catch (Exception e) {
-          return null;
-      }
-  }
+	    try {
+	        // Añadimos la carpeta Sound a la ruta
+	        URL url = getClass().getResource("/Sound/" + archivo); 
+	        if (url == null) {
+	            System.out.println("No se encuentra el audio: /Sound/" + archivo);
+	            return null;
+	        }
+	        return Applet.newAudioClip(url);
+	    } catch (Exception e) {
+	        return null;
+	    }
+	}
   public void canviarMusica(int nivell) {
       AudioClip novaMusica;
       if (nivell >= 30) {

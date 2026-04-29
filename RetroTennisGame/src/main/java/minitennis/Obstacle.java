@@ -56,8 +56,8 @@ public class Obstacle {
         //Estructura de control d'errors TRY-CATCH
         try {
             // Intentem carregar les imatges des del mateix paquet on està la classe
-            URL urlNormal = getClass().getResource("fantasmaAmarillo.png");
-            URL urlDanyat = getClass().getResource("fantasmaRojo.png");
+            URL urlNormal = getClass().getResource("/Imatge/fantasmaAmarillo.png");
+            URL urlDanyat = getClass().getResource("/Imatge/fantasmaRojo.png");
            
             //Estructura condicional on s'avalua si la imatge no es nul·la
             if (urlNormal != null) {
