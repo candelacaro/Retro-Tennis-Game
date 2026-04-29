@@ -7,6 +7,7 @@ import java.util.List;
 import javax.swing.ImageIcon;
 
 import minitennis.main.Game;
+import minitennis.utils.Utils;
 /**
 * Classe ball que gestiona el comportament de la pilota, incloent el moviment,
 * el renderitzat i la lògica de col·lisió amb parets i obstacles.
@@ -60,6 +61,15 @@ public class Ball {
 	 */
 	public void increaseSpeed() {
 		speed *= INCREMENT_VELOCITAT;
+		// Calculem la nova velocitat potencial
+		double nuevaVelocidad = speed * Utils.INCREMENTO_POR_NIVEL;
+	    
+	    // Solo aumentamos si no hemos llegado al límite de frames
+	    if (nuevaVelocidad <= Utils.MAX_BALL_SPEED) {
+	        speed = nuevaVelocidad;
+	    } else {
+	        speed = Utils.MAX_BALL_SPEED;
+	    }
 	}
 	/**
 	 * Mètode que defineix la velocitat de la pilota.

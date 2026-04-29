@@ -5,6 +5,7 @@ import javax.swing.*;
 import minitennis.language.ControlLanguage;
 import minitennis.language.LanguageSelectionMenu;
 import minitennis.main.Game;
+import minitennis.utils.Utils;
 
 import java.awt.*;
 import java.awt.event.KeyAdapter;
@@ -40,10 +41,15 @@ public class MenuRetro extends JPanel {
                         seleccion = (seleccion + 1) % opciones.length;
                         break;
                     case KeyEvent.VK_LEFT:
-                        if (seleccion == 1 && nivel > 1) nivel--;
+                    	if (seleccion == 1 && nivel > Utils.MIN_LEVELS) {
+                            nivel--;
+                        }
                         break;
                     case KeyEvent.VK_RIGHT:
-                        if (seleccion == 1 && nivel < 30) nivel++;
+                    	if (seleccion == 1) {
+                            // Quitamos el límite de 30, ahora es infinito
+                            nivel++; 
+                        }
                         break;
                     case KeyEvent.VK_ENTER:
                         ejecutarOpcion();

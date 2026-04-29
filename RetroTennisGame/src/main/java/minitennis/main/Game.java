@@ -74,23 +74,22 @@ public class Game extends JPanel {
 	 * @param selectedLevel, nivell inicial seleccionat
 	 */
 	public Game(String playerName, int selectedLevel, String language) {
-		// Assignació del nom a l'atribut playerName
 		this.playerName = playerName;
-		
-		this.language = language;
-		// Assiganció de nivell seleccionat a la variable level
-		Game.level = selectedLevel;
-		// Instància d'objecte (bola) de la classe Ball
-		Ball primeraBola = new Ball(this);
-		// Afegim a la llista la primera bola instanciada
-		balls.add(primeraBola);
-		/*
-		 * Estructura iterativa, que ajusta la velocitat segons el nivell triat al menú
-		 */
-		for (int i = 1; i < selectedLevel; i++) {
-			// Fem servir la funció increaseSpeed()
-			primeraBola.increaseSpeed();
-		}
+	    this.language = language;
+	    Game.level = selectedLevel;
+
+	    Ball primeraBola = new Ball(this);
+	    
+	    // CALCULAR VELOCIDAD INICIAL DINÁMICA
+	    // Fórmula: VelocidadBase * (1.2 ^ (Nivel - 1))
+	    double velocidadCalculada = Utils.VELOCIDAD_BASE * Math.pow(Utils.INCREMENTO_POR_NIVEL, selectedLevel - 1);
+	    
+	    // Aplicamos el "Clamp" (limitador): nunca superará el MAX_BALL_SPEED
+	    double velocidadFinal = Math.min(velocidadCalculada, Utils.MAX_BALL_SPEED);
+	    
+	    primeraBola.setSpeed(velocidadFinal);
+	    balls.add(primeraBola);
+	    
 		// Estructura de control d'errors TRY-CATCH, gestion el fons del videojoc
 		try {
 
