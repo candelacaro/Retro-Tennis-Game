@@ -15,7 +15,7 @@ public class Connexio {
 
 				Class.forName("com.mysql.cj.jdbc.Driver");
 
-				cn = DriverManager.getConnection("jdbc:mysql://100.2.15: 3306/retro_tennis", "root", "1234");
+				cn = DriverManager.getConnection("jdbc:mysql://localhost:3306/retro_tennis", "root", "1234");
 			}
 
 		} catch (Exception ex) {
