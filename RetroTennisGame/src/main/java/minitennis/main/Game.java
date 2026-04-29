@@ -358,17 +358,27 @@ public class Game extends JPanel {
 	 * Mètode que controla quan la bola ha caigut i perds
 	 */
 	public void gameOver() {
-		sonido.playGameOver();
-	    // Inserció de dades automàtica al perdre
-	    Connexio conn = new Connexio();
-	    conn.guardarPartida(playerName, (int) score, language);
-	    
-	    int result = JOptionPane.showConfirmDialog(this, "Vols tornar a jugar?", "Game Over", JOptionPane.YES_NO_OPTION);
-	    if (result == JOptionPane.YES_OPTION) {
-	        // Lògica per reiniciar el joc
-	    } else {
-	        System.exit(0);
+	    // 1. Detener sonidos (esto funciona siempre)
+	    sonido.stopFondo();
+	    sonido.playGameOver();
+
+	    // 2. Intentar guardar en la base de datos con seguridad
+	    try {
+	        Connexio c = new Connexio();
+	        // Solo intentamos guardar si el objeto conexión no dio error antes
+	        c.guardarPartida(playerName, (int) score, language);
+	    } catch (Exception e) {
+	        // Si la base de datos falla, imprimimos el error en consola 
+	        // pero NO dejamos que se detenga el programa
+	        System.err.println("Error al conectar con la base de datos: " + e.getMessage());
 	    }
+
+	    // 3. Mostrar el mensaje (ahora sí llegará aquí)
+	    JOptionPane.showMessageDialog(this, 
+	        "GAME OVER\nJugador: " + playerName + "\nPuntuació total: " + score);
+
+	    // 4. Salir
+	    System.exit(0);
 	}
 
 	public Racquet getRacquet () {
