@@ -9,23 +9,34 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 //Definició de la classe que crea el panell de selecció d'idioma
 public class LanguageSelectionMenu extends JPanel {
+	
+	private final String IDIOMA_ES = "ESPAÑOL";
+	private final String IDIOMA_EN = "ENGLISH";
+	private final String IDIOMA_CAT = "CATALÀ";
+	
+	private final int ANGLES = 0;
+	private final int CASTELLA = 1;
+	private final int CATALA = 2;
+	
 	// Llista d'opcions disponibles
-    private String[] idiomas = {"ENGLISH", "ESPAÑOL", "CATALÀ"};
- // Índex per saber quina opció està ressaltada
+    private String[] idiomas = {IDIOMA_EN, IDIOMA_ES, IDIOMA_CAT};
+    // Índex per saber quina opció està ressaltada
     private int seleccion = 0;
- // Variable per guardar la imatge de fons del menu
+    // Variable per guardar la imatge de fons del menu
     private Image fondo;
- // Constructor de la classe
+    // Constructor de la classe
+    
+    
     public LanguageSelectionMenu() {
         try {
         	// Intenta carregar la imatge des de la carpeta de recursos del projecte
             fondo = new ImageIcon(getClass().getResource("/Imatge/fondoMenu.gif")).getImage();
         } catch (Exception e) { }// Si hi ha un error en la càrrega, continua sense imatge
-     // Estableix un color de fons negre per defecte
+        // Estableix un color de fons negre per defecte
         setBackground(Color.BLACK);
-     // Permet que aquest panell capti les pulsacions del teclat
+        // Permet que aquest panell capti les pulsacions del teclat
         setFocusable(true);
-     // Afegeix un "listener" per detectar quan l'usuari prem una tecla
+        // Afegeix un "listener" per detectar quan l'usuari prem una tecla
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -47,9 +58,15 @@ public class LanguageSelectionMenu extends JPanel {
     private void confirmarIdioma() {
         ControlLanguage cl = new ControlLanguage();// Instància de l'objecte que controla l'idioma
      // Assigna l'idioma segons l'índex seleccionat
-        if (seleccion == 0) cl.setIdiomaActual(ControlLanguage.ANGLES);
-        else if (seleccion == 1) cl.setIdiomaActual(ControlLanguage.CASTELLA);
-        else if (seleccion == 2) cl.setIdiomaActual(ControlLanguage.CATALA);
+        if (seleccion == ANGLES) {
+        		cl.setIdiomaActual(ControlLanguage.ANGLES);
+        }
+        else if (seleccion == CASTELLA) {
+        		cl.setIdiomaActual(ControlLanguage.CASTELLA);
+        }
+        else if (seleccion == CATALA) {
+        		cl.setIdiomaActual(ControlLanguage.CATALA);
+        }
      // Busca la finestra principal (JFrame) que conté aquest panell
         JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
         if (frame != null) {
@@ -61,7 +78,10 @@ public class LanguageSelectionMenu extends JPanel {
             menuRetro.requestFocusInWindow();// Demana el focus del teclat per al nou menú
         }
     }
- // Mètode que s'encarrega de dibuixar tots els elements gràfics
+    
+    /**
+     * Mètode que s'encarrega de dibuixar tots els elements gràfics
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g); // Crida al mètode original de la superclasse
@@ -77,9 +97,9 @@ public class LanguageSelectionMenu extends JPanel {
 
      // Lògica per mostrar el títol segons l'idioma ressaltat (dinàmic)
         String titulo;
-        if (seleccion == 0) titulo = "SELECT LANGUAGE";
-        else if (seleccion == 1) titulo = "SELECCIONAR IDIOMA";
-        else titulo = "SELECCIONAR IDIOMA"; // Catalán es igual en este caso, o "TRIA IDIOMA"
+        if (seleccion == 0) titulo = "SELECT";
+        else if (seleccion == 1) titulo = "SELECCIONAR";
+        else titulo = "SELECCIONAR "; // Catalán es igual en este caso, o "TRIA IDIOMA"
 
         g2.setColor(Color.YELLOW); // Color groc per al títol
         g2.setFont(new Font("Monospaced", Font.BOLD, 26));// Font tipus retro i mida	
