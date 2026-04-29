@@ -170,6 +170,7 @@ public class Game extends JPanel {
 			// Actualitzem els obstacles segons el nivell
 			actualitzarObstacles(level);
 		}
+		sonido.canviarMusica(level);
 	}
 
 	/**
