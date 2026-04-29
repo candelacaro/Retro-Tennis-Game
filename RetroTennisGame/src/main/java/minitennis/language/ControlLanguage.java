@@ -8,9 +8,10 @@ import minitennis.utils.Utils;
 public class ControlLanguage {
 	// Defineixen els identificadors d'idioma suportats per l'aplicació
 	private final String IDIOMA_PER_DEFECTE = Utils.LANG_EN;
-	final static String CATALA = "CAT";
-	final static String CASTELLA = "ES";
-	final static String ANGLES = "EN";
+	final static String CATALA = Utils.LANG_CAT;
+	final static String CASTELLA = Utils.LANG_ES;
+	final static String ANGLES = Utils.LANG_EN;
+	
 	//Emmagatzema el codi de l'idioma actiu en la instància
 	private String idiomaActual = "";
 	/**
@@ -33,7 +34,7 @@ public class ControlLanguage {
 
 		case CATALA: // Cas en què l'idioma actiu és el Català
             switch (clau) {
-            case "titol_menu": return "RETRO TENNIS";
+            case "titol:menu": return "RETRO TENNIS";
             case "regles": return "Regles: Mou la pala per evitar que la bola caigui.";
             case "nivell": return "NIVELL: ";
             case "boto_acceptar": return "JUGAR";

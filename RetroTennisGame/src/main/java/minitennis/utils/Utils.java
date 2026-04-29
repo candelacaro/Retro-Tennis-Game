@@ -13,7 +13,7 @@ public class Utils {
     public static final int MAX_BALLS = 6;
     public static final int LEVEL_FOR_SECOND_BALL = 16;
     
-    //public static final String LANG_CAT = "CAT";
+    public static final String LANG_CAT = "CAT";
     public static final String LANG_ES = "ES";
     public static final String LANG_EN = "EN";
 }
