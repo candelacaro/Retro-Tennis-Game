@@ -55,7 +55,8 @@ public class Ball {
 	 * Mètode que incrementa la velocitat de la pilota
 	 */
 	public void increaseSpeed() {
-		speed *= INCREMENT_VELOCITAT;
+	    // Multiplicamos la velocidad actual por el factor de incremento (1.10)
+	    this.speed = this.speed * INCREMENT_VELOCITAT;
 	}
 	/**
 	 * Mètode que defineix la velocitat de la pilota.
