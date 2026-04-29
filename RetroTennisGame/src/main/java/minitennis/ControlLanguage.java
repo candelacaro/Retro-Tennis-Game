@@ -1,5 +1,4 @@
 package minitennis;
-
 public class ControlLanguage {
 	// Defineixen els identificadors d'idioma suportats per l'aplicació
 	private final String IDIOMA_PER_DEFECTE = "EN";
@@ -9,23 +8,22 @@ public class ControlLanguage {
 	//Emmagatzema el codi de l'idioma actiu en la instància
 	private String idiomaActual = "";
 	/**
-     * Mètode mutador per definir l'idioma de treball.
-     * @param idioma Codi de l'idioma
-     */
+    * Mètode mutador per definir l'idioma de treball.
+    * @param idioma Codi de l'idioma
+    */
 	public void setIdiomaActual(String idioma) {
 		this.idiomaActual = idioma; // Assignació de la referència a l'atribut d'instància
 	}
 	/**
-     * Mètode d'accés per obtenir la traducció d'una etiqueta.
-     * Implementa una lògica de selecció múltiple per resoldre
-     * la cadena de text corresponent a la clau i l'idioma actual.
-     * @param clau Identificador únic del text.
-     * @return El text traduït o un missatge d'error si l'idioma no existeix.
-     */
+    * Mètode d'accés per obtenir la traducció d'una etiqueta.
+    * Implementa una lògica de selecció múltiple per resoldre
+    * la cadena de text corresponent a la clau i l'idioma actual.
+    * @param clau Identificador únic del text.
+    * @return El text traduït o un missatge d'error si l'idioma no existeix.
+    */
 	public String get(String clau) {
 		// Estructura de control per a la selecció de l'idioma
 		switch (idiomaActual) {
-
 		case CATALA:
 			// Estructura de control per a la resolució de la clau
 			switch (clau) {
@@ -46,7 +44,6 @@ public class ControlLanguage {
 			default:
 				return clau; // si la clau no existeix, retorna el nom de la clau
 			}
-
 		case CASTELLA:
 			switch (clau) {
 			case "titol_menu":
@@ -66,7 +63,6 @@ public class ControlLanguage {
 			default:
 				return clau;
 			}
-
 		case ANGLES:
 			switch (clau) {
 			case "titol_menu":

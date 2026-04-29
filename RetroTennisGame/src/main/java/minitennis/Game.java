@@ -1,5 +1,4 @@
 package minitennis;
-
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -17,15 +16,13 @@ import java.awt.Image;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-
 /**
- * Classe Game que hereta de JPanel, funciona com a motor principal del joc.
- * * @author Candela Cabello, André Medinas, Izan Perez, Daner Coria i Adrià
- * Chenovart
- */
+* Classe Game que hereta de JPanel, funciona com a motor principal del joc.
+* * @author Candela Cabello, André Medinas, Izan Perez, Daner Coria i Adrià
+* Chenovart
+*/
 public class Game extends JPanel {
 	private static final long serialVersionUID = 1L;
-
 	// Instància dels elements del joc.
 	// Instància d'objecte de la classe Racquet: La pala del jugador
 	Racquet racquet = new Racquet(this);
@@ -35,7 +32,6 @@ public class Game extends JPanel {
 	List<Ball> balls = new ArrayList<>();
 	// Llista d'obstacles a destruir
 	List<Obstacle> obstacles = new ArrayList<>();
-
 	/*Declaració i inicialització de variable estàtica, que representa el nivell
 	del joc*/
 	static int level;
@@ -51,25 +47,21 @@ public class Game extends JPanel {
 	// Declaració i inicialització de variable, per l'imatge de fons del joc
 	private Image fons;
 	private Image[] fondos = new Image[6];
-
 	/**
 	 * Constructor del joc. Inicialitza components i escoltadors d'entrada.
-	 * 
+	 *
 	 * @param playerName,    nom del jugador
 	 * @param selectedLevel, nivell inicial seleccionat
 	 */
 	public Game(String playerName, int selectedLevel) {
-
 		// Assignació del nom a l'atribut playerName
 		this.playerName = playerName;
 		// Assiganció de nivell seleccionat a la variable level
 		Game.level = selectedLevel;
-
 		// Instància d'objecte (bola) de la classe Ball
 		Ball primeraBola = new Ball(this);
 		// Afegim a la llista la primera bola instanciada
 		balls.add(primeraBola);
-
 		/*
 		 * Estructura iterativa, que ajusta la velocitat segons el nivell triat al menú
 		 */
@@ -77,7 +69,6 @@ public class Game extends JPanel {
 			// Fem servir la funció increaseSpeed()
 			primeraBola.increaseSpeed();
 		}
-
 		// Estructura de control d'errors TRY-CATCH, gestion el fons del videojoc
 		try {
 			
@@ -86,7 +77,6 @@ public class Game extends JPanel {
 			 * posterior renderització en el panell del joc.
 			 */
 			fons = new ImageIcon(getClass().getResource("fondovideojuego.jpg")).getImage();
-
 			// Càrrega de l'array de fondos
 			fondos[0] = new ImageIcon(getClass().getResource("fondovideojuego.jpg")).getImage();
 			fondos[1] = new ImageIcon(getClass().getResource("fondovideojuego2.jpg")).getImage();
@@ -98,14 +88,11 @@ public class Game extends JPanel {
 			// Si es produiex alguna mena d'excepció la capturem i mostrem el missatge
 			System.out.println("No se pudo cargar la imagen de fondo.");
 		}
-
 		// Actualitzem els obstacles segons el nivell
 		actualitzarObstacles(Game.level);
-
 		/*Mètode del JPanel que registra un "escoltador" per detectar quan l'usuari
 		prem tecles. */
 		addKeyListener(new KeyAdapter() {
-
 			/**
 			 * Mètode que s'executa automàticament en el moment que es prem una tecla.
 			 * Delega l'acció a la raqueta (racquet.keyPressed(e)) per iniciar el moviment.
@@ -113,7 +100,6 @@ public class Game extends JPanel {
 			public void keyPressed(KeyEvent e) {
 				racquet.keyPressed(e);
 			}
-
 			/**
 			 * Mètode que s'executa quan l'usuari deixa anar la tecla. Indica a la raqueta
 			 * (racquet.keyReleased(e)) que s'ha d'aturar.
@@ -122,7 +108,6 @@ public class Game extends JPanel {
 				racquet.keyReleased(e);
 			}
 		});
-
 		/*
 		 * Registra un escoltador per detectar el moviment del cursor del ratolí dins de
 		 * la finestra del joc.
@@ -137,13 +122,11 @@ public class Game extends JPanel {
 				racquet.setMouse(e.getX());
 			}
 		});
-
 		// Permet rebre focus per al teclat
 		setFocusable(true);
 		// Reproducció del so de fons
 		sonido.playFondo();
 	}
-
 	/**
 	 * Mètode que actualitza el nivell i la puntuació cada cert temps.
 	 */
@@ -155,7 +138,6 @@ public class Game extends JPanel {
 		score += (now - lastPointUpdate);
 		// Actualització de temps
 		lastPointUpdate = now;
-
 		// Estructura condicional on avaluem si arribem als 20s
 		if (now - startTime >= 20000) {
 			// Incrementem el nivell
@@ -164,15 +146,16 @@ public class Game extends JPanel {
 			startTime = now;
 			// Estructura iterativa que recorre la llista balls
 			for (Ball b : balls) {
+				double pre = b.getSpeed();
 				// Incrementem la velocitat de la bola amb el mètode increaseSpeed()
 				b.increaseSpeed();
+				System.out.println("INCREASE SPEED: pre:"+pre+", post:"+b.getSpeed());
 			}
 			// Actualitzem els obstacles segons el nivell
 			actualitzarObstacles(level);
 		}
 		sonido.canviarMusica(level);
 	}
-
 	/**
 	 * Mètode que executa tota la lògica de moviment del frame actual
 	 */
@@ -185,7 +168,6 @@ public class Game extends JPanel {
 		updateLevel();
 		// Fem servir el mètode .move() per moure la raqueta
 		racquet.move();
-
 		// Estructura condicional on si arriab al nivell 16 surt una bola nova
 		if (level >= 16 && balls.size() < 2) {
 			// Instància d'objecte (bola) de la classe Ball
@@ -195,7 +177,6 @@ public class Game extends JPanel {
 			// Afegim la nova bola a la llista
 			balls.add(b2);
 		}
-
 		// Estructura iterativa que s'encarrega de moure les boles
 		for (int i = 0; i < balls.size(); i++) {
 			// Instància d'objecte que mira si hagut col·lisió amb un obstacle
@@ -205,40 +186,33 @@ public class Game extends JPanel {
 				// Eliminem l'obstacle
 				obstacles.remove(chocado);
 		}
-
 		// Estructura iterativa que recorre la llista d'obstacles
 		for (Obstacle o : obstacles) {
 			// fem servir el mètode move() per moure el obstacle
 			o.move();
 		}
 	}
-
 	/**
 	 * Mètode principal de renderització del component.
 	 * @param g, Objecte Graphics que permet realitzar operacions de dibuix.
 	 */
 	@Override
 	protected void paintComponent(Graphics g) {
-
 		//Neteja el panell i prepara el dibuix base de la superclasse (JPanel)
 		super.paintComponent(g);
 		
-		//Casting a Graphics2D per accedir a funcionalitats gràfiques 
+		//Casting a Graphics2D per accedir a funcionalitats gràfiques
 		Graphics2D g2d = (Graphics2D) g;
-
 		// Mostra del fons mitjançant mètode drawImage, posem el fons i els límits
 		g2d.drawImage(getFondoActual(), 0, 0, getWidth(), getHeight(), this);
-
 		/*Fem servir el mètode setRenderingHint(), per renderitzar el fons i objectes i
 		que es mostri net*/
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
 		// Estructura iterativa que recorre la llista balls
 		for (Ball b : balls) {
 			// Fem servir el mètode .paint() per dibuixar les boles
 			b.paint(g2d);
 		}
-
 		// Amb el mètode paint() pintem la raqueta
 		racquet.paint(g2d);
 		// Estructura iterativa que recorre la llista obstacles
@@ -246,7 +220,6 @@ public class Game extends JPanel {
 			// Amb el mètode paint(), pintem els obstacles
 			o.paint(g2d);
 		}
-
 		// Posem color blanc amb el mètode setColor, per la lletra
 		g2d.setColor(Color.WHITE);
 		// Amb el mètode setFont posem una font Retro, la lletra en negreta i la mida
@@ -258,7 +231,6 @@ public class Game extends JPanel {
 		jugant*/
 		g2d.drawString("Score: " + score + " ms", 10, 40);
 	}
-
 	/**
 	 * Mètode que serveix per multiplicar el número de boles
 	 */
@@ -282,7 +254,6 @@ public class Game extends JPanel {
 			}
 		}
 	}
-
 	/**
 	 * Mètode que selecciona i retorna la imatge de fons corresponent al nivell actual del joc.
 	 * El canvi de fons es produeix de forma escalonada cada 5 nivells.
@@ -292,19 +263,15 @@ public class Game extends JPanel {
 		
 		//Declaració i incialització de final, aquesta controla cada quants nivells ha de canviar el fons
 		final int CADA_CINC_NIVELL = 5;
-
 		//Declaració i incialització de variable, aquesta calcula l'index de l'Array
 		int index = (level - 1) / CADA_CINC_NIVELL;
-
 		//Estructura  condicional que controla que si el nivell és superior a la quantitat de fons disponibles.
 		if (index >= fondos.length) {
 			index = fondos.length - 1;
 		}
-
 		//Estructura condicional que assegura que l'índex mai sigui negatiu.
 		if (index < 0)
 			index = 0;
-
 		//Estructura condicional que comprova si existeix una imatge carregada en la posició 'index'
 		if (fondos[index] != null) {
 			//Si la imatge existeix, la funció l'envia i s'acaba aquí
@@ -314,7 +281,6 @@ public class Game extends JPanel {
 		    return fons;
 		}
 	}
-
 	/**
 	 * Mètode que actualitza els obstacles segons el nivell que s'està jugant
 	 * * @param nivellActual, el nivell que s'està jugant
@@ -327,14 +293,11 @@ public class Game extends JPanel {
 			// No retornem res
 			return;
 		}
-
 		/*Declaració i inicialització de variable que calcula el numObstacles, com a
 		màxim 10. Ho controlem amb el mètode Math.min()*/
 		int numObstacles = Math.min(nivellActual - 1, 10);
-
 		// Declaració i incialització de random
 		Random rand = new Random();
-
 		/*Estructura iterativa que afegeix una instància d'objecte obstacle a la llista
 		obstacles*/
 		for (int i = 0; i < numObstacles; i++) {
@@ -342,7 +305,6 @@ public class Game extends JPanel {
 			obstacles.add(new Obstacle(rand.nextInt(250) + 10, rand.nextInt(150) + 50, this, nivellActual));
 		}
 	}
-
 	/**
 	 * Mètode que controla quan la bola ha caigut i perds
 	 */
@@ -355,26 +317,5 @@ public class Game extends JPanel {
 		JOptionPane.showMessageDialog(this, "GAME OVER\n" + playerName + "\nScore: " + score);
 		System.exit(0);
 	}
-
-	// MAIN PER FE RPROVES
-	public static void main(String[] args) {
-
-		JFrame frame = new JFrame("Mini Tennis");
-		Game game = new Game("Jugador", 1);
-		frame.add(game);
-		frame.setSize(300, 400);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setVisible(true);
-		frame.setLocationRelativeTo(null);
-
-		while (true) {
-			game.move();
-			game.repaint();
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+	
 }

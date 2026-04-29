@@ -53,6 +53,7 @@ public class Obstacle {
         this.y = y;
         this.game = game;
         
+        //Estructura de control d'errors TRY-CATCH
         try {
             // Intentem carregar les imatges des del mateix paquet on està la classe
             URL urlNormal = getClass().getResource("fantasmaAmarillo.png");
@@ -66,40 +67,90 @@ public class Obstacle {
             
             //Estructura condicional on s'avalua si la imatge no es nul·la
             if (urlDanyat != null) {
+            		//Si no es nul·la, mostrem la imatge
                 imgDanyat = new ImageIcon(urlDanyat).getImage();
             }
         } catch (Exception e) {
             // No dibuixem res si falla
         }
         
-        if (nivel >= 10) this.vida = 2;
+        //Estructura condicional mirem si el nivell arriab al 10, quan arriab el 10 el fantasma te dues vides
+        if (nivel >= 10) {
+        		this.vida = 2;
+        }
     }
 
+    /**
+     * Mètode move que gestiona el moviment dels obstacles
+     */
     public void move() {
+    		//Estructura condicional on valida que es trobi dins de la finestra
         if (game.getWidth() > 0) {
+        		//Sumem la velocitat lateral a la coordenada x per al desplaçament del obstacle
             x += dx;
-            if (x <= 0 || x >= game.getWidth() - WIDTH) dx *= -1;
+            //Estructura condicional on avaluem la col·lisió de l'obstacle amb la paret
+            if (x <= 0 || x >= game.getWidth() - WIDTH) {
+            		//Invertim el desplaçament
+            		dx *= -1;
+            }
         }
     }
 
-    public void ferDany() { vida--; }
-    public int getVida() { return vida; }
+    /**
+     * Mètode que controla la vida del fantasma, aquest serveix per apartir del nivell 10
+     */
+    public void ferDany() { 
+    		//Decrementació de la vida
+    		vida--; 
+    	}
+    
+    /**
+     * Mètode GETTER que accedeix a la vida
+     * @return el valor de vida
+     */
+    public int getVida() { 
+    		return vida; 
+    	}
 
+    /**
+     * Mètode que dibuixa la representació gràfica de l'obstacle (fantasma) a la
+	 * pantalla. 
+     * @param g
+     */
     public void paint(Graphics2D g) {
-        // Triem la imatge segons la vida
-        Image imgActual = (vida == 2) ? imgNormal : imgDanyat;
-        
-        // Calculem el centrat per a la imatge
-        int offsetDrawX = x - (IMG_WIDTH - WIDTH) / 2;
-        int offsetDrawY = y - (IMG_HEIGHT - HEIGHT) / 2;
+    	
+    		//Declaració d'objecte imatge, per mostrar les diferents imatges
+    		Image imgActual;
+    		
+        // Triem la imatge segons la vida amb l'estructura condicional
+    		if(vida == 2) {
+    			//Mostrem el fantasma groc
+    			imgActual = imgNormal;
+    		} else {
+    			//Mostrem el fantasma vermell
+    			imgActual = imgDanyat;
+    		}
+    		
+        //Declaració i inicialització de variable per calcular el centrat per a la imatge a l'eix X
+        int centratFantasmaX = x - (IMG_WIDTH - WIDTH) / 2;
+        //Declaració i inicialització de variable per calcular el centrat per a la imatge a l'eix Y
+        int centratFantasmaY = y - (IMG_HEIGHT - HEIGHT) / 2;
        
-        // NOMÉS dibuixem si la imatge existeix. Si no, no es veurà res.
+        // Estructura condicional que avalua si la imatge existeix. Si no, no es veurà res.
         if (imgActual != null) {
-            g.drawImage(imgActual, offsetDrawX, offsetDrawY, IMG_WIDTH, IMG_HEIGHT, null);
+        		//Es dibuixa amb el mètode drawImage
+            g.drawImage(imgActual, centratFantasmaX, centratFantasmaY, IMG_WIDTH, IMG_HEIGHT, null);
         }
     }
 
+    /**
+     * Mètode que retorna l'àrea rectangular dels obstacles per a càlculs de
+	 * col·lisió.
+     * @return
+     */
     public Rectangle getBounds() {
+    		//Objecte Rectangle.
         return new Rectangle(x, y, WIDTH, HEIGHT);
     }
 }
+
