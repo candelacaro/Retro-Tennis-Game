@@ -48,15 +48,15 @@ public class Sound {
       AudioClip novaMusica;
       if (nivell >= 30) {
           novaMusica = musicaNivell30;
-      } else if (nivell >= 25) {
+      } else if (nivell >= 26) {
           novaMusica = musicaNivell25;
-      } else if (nivell >= 20) {
+      } else if (nivell >= 21) {
           novaMusica = musicaNivell20;
-      } else if (nivell >= 15) {
+      } else if (nivell >= 16) {
           novaMusica = musicaNivell15;
-      } else if (nivell >= 10) {
+      } else if (nivell >= 11) {
           novaMusica = musicaNivell10;
-      } else if (nivell >= 5) {
+      } else if (nivell >= 6) {
           novaMusica = musicaNivell5;
       } else {
           novaMusica = musicaNivell1;
