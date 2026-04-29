@@ -358,26 +358,32 @@ public class Game extends JPanel {
 	 * Mètode que controla quan la bola ha caigut i perds
 	 */
 	public void gameOver() {
-	    // 1. Detener sonidos (esto funciona siempre)
+		// 1. Aturar sons
 	    sonido.stopFondo();
 	    sonido.playGameOver();
 
-	    // 2. Intentar guardar en la base de datos con seguridad
+	    String rankingFinal = "";
+
+	    // 2. Guardar i obtenir rànquing automàticament
 	    try {
 	        Connexio c = new Connexio();
-	        // Solo intentamos guardar si el objeto conexión no dio error antes
-	        c.guardarPartida(playerName, (int) score, language);
+	        // Guardem i el mètode ens retorna el TOP 10 que genera el procediment
+	        rankingFinal = c.guardarPartida(playerName, (int) score, language);
 	    } catch (Exception e) {
-	        // Si la base de datos falla, imprimimos el error en consola 
-	        // pero NO dejamos que se detenga el programa
-	        System.err.println("Error al conectar con la base de datos: " + e.getMessage());
+	        rankingFinal = "No s'ha pogut connectar amb la base de dades.";
 	    }
 
-	    // 3. Mostrar el mensaje (ahora sí llegará aquí)
-	    JOptionPane.showMessageDialog(this, 
-	        "GAME OVER\nJugador: " + playerName + "\nPuntuació total: " + score);
+	    // 3. Preparar el missatge per l'usuari
+	    String missatge = "--- GAME OVER ---\n\n" +
+	                      "Jugador: " + playerName + "\n" +
+	                      "Puntuació: " + score + " ms\n\n" +
+	                      "--- TOP 10 RANKING ---\n" + 
+	                      rankingFinal;
 
-	    // 4. Salir
+	    // 4. Mostrar la finestra amb tota la informació
+	    JOptionPane.showMessageDialog(this, missatge, "Resultats de la Partida", JOptionPane.INFORMATION_MESSAGE);
+
+	    // 5. Tancar el joc
 	    System.exit(0);
 	}
 

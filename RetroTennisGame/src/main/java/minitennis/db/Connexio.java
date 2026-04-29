@@ -23,11 +23,11 @@ public class Connexio {
         }
     }
 
-    public void guardarPartida(String nombre, int puntuacion, String idioma) {
-        connectar(); // Ens assegurem que la connexió estigui oberta
+    public String guardarPartida(String nombre, int puntuacion, String idioma) {
+    	connectar(); 
+        StringBuilder sb = new StringBuilder();
         String sql = "{CALL ranking10millors(?, ?, ?)}";
 
-        // NOMÉS posem el Statement al try-with-resources, NO la Connection cn
         try (CallableStatement cs = cn.prepareCall(sql)) {
             cs.setString(1, nombre);
             cs.setInt(2, puntuacion);
@@ -37,18 +37,20 @@ public class Connexio {
 
             if (resultados) {
                 try (ResultSet rs = cs.getResultSet()) {
-                    System.out.println("\n--- TOP 10 ---");
+                    int pos = 1;
                     while (rs.next()) {
-                        System.out.println("Nom: " + rs.getString("name") +
-                                " | Punts: " + rs.getInt("score") +
-                                " | Data: " + rs.getTimestamp("date") +
-                                " | Idioma: " + rs.getString("language"));
+                        sb.append(pos).append(". ")
+                          .append(rs.getString("name")).append(" - ")
+                          .append(rs.getInt("score")).append(" pts\n");
+                        pos++;
                     }
                 }
+            } else {
+                return "Partida guardada (sense rànquing disponible).";
             }
-            System.out.println("Partida guardada correctament.");
+            return sb.toString();
         } catch (SQLException e) {
-            System.out.println("Error al guardar la partida: " + e.getMessage());
+            return "Error al desar la partida: " + e.getMessage();
         }
     }
 
