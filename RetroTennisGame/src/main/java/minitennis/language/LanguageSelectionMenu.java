@@ -13,7 +13,7 @@ public class LanguageSelectionMenu extends JPanel {
     private String[] idiomas = {"ENGLISH", "ESPAÑOL", "CATALÀ"};
  // Índex per saber quina opció està ressaltada
     private int seleccion = 0;
- // Variable per guardar la imatge de fons del menú
+ // Variable per guardar la imatge de fons del menu
     private Image fondo;
  // Constructor de la classe
     public LanguageSelectionMenu() {

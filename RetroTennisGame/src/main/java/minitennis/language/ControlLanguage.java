@@ -59,7 +59,7 @@ public class ControlLanguage {
             case "guia_menu": return "Flechas para navegar, ENTER para seleccionar";
             default: return clau;
             }
-        default: // Idioma per defecte: English (s'executa si no és ni CAT ni ES)
+        default: // Idioma per defecte: English (s'executa si no és ni CAT ni ES
             switch (clau) {
             case "titol_menu": return "RETRO TENNIS";
             case "regles": return "Rules: Move the paddle to prevent the ball from falling.";
