@@ -1,64 +1,82 @@
 package minitennis;
-
 import java.applet.Applet;
 import java.applet.AudioClip;
 import java.net.URL;
-
 public class Sound {
-
-    private AudioClip fondo; //variable per la musica de fons
-    private AudioClip golpe; //variable per al so del rebot
-    private AudioClip gameover; //variable per al so de game over
-
-    public Sound() {
-        try { //carrega la musica
-            fondo = cargarSonido("musica1.wav");
-            golpe = cargarSonido("edr-8-bit-jump-001-171817.wav");
-            gameover = cargarSonido("gameOver.wav");
-        } catch (Exception e) { // excepció per si falla al carregar algu arxiu.
-            System.out.println("Error cargando sonidos.");
-        }
-    }
-
-    private AudioClip cargarSonido(String archivo) {
-        URL url = getClass().getResource(archivo); //obté la ruta del arxiu
-        return Applet.newAudioClip(url); // Converteix el arxiu en so reproduible.
-
-    }
-   
-    /**
-     * Reprodueix musica de fons en un bucle infinit.
-     */
-    
-    public void playFondo() {
-        if (fondo != null) {
-            fondo.loop();
-        }
-    }
-
-    /**
-     * Reprodueix el so de cop una sola vegada
-     */
-    public void playGolpe() {
-        if (golpe != null) {
-            golpe.play();
-        }
-    }
-
-    /**
-     * Reprodueix el so de Game Over una vegada.
-     */
-    public void playGameOver() {
-        if (gameover != null) {
-            gameover.play();
-        }
-    }
-    /**
-     * Atura la música de fons
-     */
-    public void stopFondo() {
-        if (fondo != null) {
-            fondo.stop();
-        }
-    }
+   private AudioClip fondoActual;
+   private AudioClip golpe;
+   private AudioClip gameover;
+  
+   private AudioClip musicaNivell1;
+   private AudioClip musicaNivell5;
+   private AudioClip musicaNivell10;
+   private AudioClip musicaNivell15;
+   private AudioClip musicaNivell20;
+   private AudioClip musicaNivell25;
+   private AudioClip musicaNivell30;
+   public Sound() {
+       try {
+           musicaNivell1 = cargarSonido("musica1.wav");
+           musicaNivell5 = cargarSonido("musica2.wav");
+           musicaNivell10 = cargarSonido("musica3.wav");
+           musicaNivell15 = cargarSonido("musica4.wav");
+           musicaNivell20 = cargarSonido("musica5.wav");
+           musicaNivell25 = cargarSonido("musica6.wav");
+           musicaNivell30 = cargarSonido("Base_After_Base_(Full).wav");
+           golpe = cargarSonido("edr-8-bit-jump-001-171817.wav");
+           gameover = cargarSonido("gameOver.wav");
+          
+           fondoActual = musicaNivell1;
+       } catch (Exception e) {
+           System.out.println("Error carregant sons: " + e.getMessage());
+       }
+   }
+   private AudioClip cargarSonido(String archivo) {
+       try {
+           URL url = getClass().getResource(archivo);
+           if (url == null) return null;
+           return Applet.newAudioClip(url);
+       } catch (Exception e) {
+           return null;
+       }
+   }
+   public void canviarMusica(int nivell) {
+       AudioClip novaMusica;
+       if (nivell >= 30) {
+           novaMusica = musicaNivell30;
+       } else if (nivell >= 25) {
+           novaMusica = musicaNivell25;
+       } else if (nivell >= 20) {
+           novaMusica = musicaNivell20;
+       } else if (nivell >= 15) {
+           novaMusica = musicaNivell15;
+       } else if (nivell >= 10) {
+           novaMusica = musicaNivell10;
+       } else if (nivell >= 5) {
+           novaMusica = musicaNivell5;
+       } else {
+           novaMusica = musicaNivell1;
+       }
+       if (novaMusica != fondoActual && novaMusica != null) {
+           if (fondoActual != null) fondoActual.stop();
+           fondoActual = novaMusica;
+           fondoActual.loop();
+       }
+   }
+   public void playFondo() {
+       if (fondoActual != null) fondoActual.loop();
+   }
+   public void stopFondo() {
+       if (fondoActual != null) fondoActual.stop();
+   }
+   public void playGolpe() {
+       if (golpe != null) golpe.play();
+   }
+   public void playGameOver() {
+       if (gameover != null) gameover.play();
+   }
 }
+
+
+
+
