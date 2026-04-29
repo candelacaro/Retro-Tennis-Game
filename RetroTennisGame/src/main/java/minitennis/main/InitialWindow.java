@@ -7,17 +7,19 @@ import javax.swing.JTextField;
 
 import minitennis.language.ControlLanguage;
 import minitennis.language.LanguageSelectionMenu;
+import minitennis.utils.Utils;
 
 /**
- * Classe InitialWindow. Aquesta classe gestiona la configuració
- * prèvia a l'execució del joc (Input de l'usuari). Actua com a pont entre la
- * lògica de configuració de llenguatge i la instanciació del joc. 
+ * Classe InitialWindow. Aquesta classe gestiona la configuració prèvia a
+ * l'execució del joc (Input de l'usuari). Actua com a pont entre la lògica de
+ * configuració de llenguatge i la instanciació del joc.
  * 
- * * @author André Medinas, Candela Cabello, Daner Coria, Izan Perez i Adrià Chenovart
+ * @author André Medinas, Candela Cabello, Daner Coria, Izan Perez i Adrià
+ *         Chenovart
  * 
  */
 public class InitialWindow {
-	//Declaració i inicialització d'atribut de la classe controlLang
+	// Declaració i inicialització d'atribut de la classe controlLang
 	private ControlLanguage controlLang;
 
 	/**
@@ -29,32 +31,33 @@ public class InitialWindow {
 	}
 
 	/**
-	 * Mètode per mostrar la interfície de configuració.
-	 * Gestiona el flux de selecció d'idioma, dades de l'usuari i nivell inicial.
+	 * Mètode per mostrar la interfície de configuració. Gestiona el flux de
+	 * selecció d'idioma, dades de l'usuari i nivell inicial.
 	 */
 	public void mostrarMenu() {
 		// Creem el frame principal del joc
 		JFrame frame = new JFrame("Retro Tennis");
-		
+
 		// Instanciem el nostre nou panell de selecció d'idioma retro
 		LanguageSelectionMenu selectionMenu = new LanguageSelectionMenu();
-		
+
 		// Configurem el frame
 		frame.add(selectionMenu);
-		frame.setSize(300, 400); // Mida estàndard per als teus menús
+		frame.setSize(Utils.WINDOW_WIDTH, Utils.WINDOW_HEIGHT);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
 		frame.setLocationRelativeTo(null); // Centrat a la pantalla
 		frame.setVisible(true);
-		
+
 		// Molt important: demanar el focus perquè el teclat funcioni al moment
 		selectionMenu.requestFocusInWindow();
 	}
 
 	/**
 	 * Mètode privat per a la inicialització del contenidor principal i el bucle del
-	 * joc. 
-	 * @param nom Identificador de l'usuari.
+	 * joc.
+	 * 
+	 * @param nom    Identificador de l'usuari.
 	 * @param nivell Valor sencer que determina la dificultat inicial.
 	 */
 	private void llançarJoc(String nom, int nivell, String language) {
@@ -65,18 +68,33 @@ public class InitialWindow {
 		// Addició de l'objecte 'game' (panell del joc)
 		frame.add(game);
 		// Definició de les dimensions del frame
-		frame.setSize(300, 400);
+		frame.setSize(Utils.WINDOW_WIDTH, Utils.WINDOW_HEIGHT);
 		// Activació de la visibilitat de la finestra
 		frame.setVisible(true);
 		// Centrat de la finestra a la pantalla
 		frame.setLocationRelativeTo(null);
+		// Tancar l'aplicació en tancar la finestra
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
 		
-		// S'utilitza un javax.swing.Timer per executar tasques cada 10 mil·lisegons
-		new javax.swing.Timer(10, e -> {
-			// Actualització de la lògica de posicions
-			game.move();
-			// Invocació del renderitzat gràfic
-			game.repaint(); 
-		}).start(); // Arrencada del fil de temps
+		new Thread(() -> {
+			while (true) {
+				// 1. Actualització de la lògica de posicions
+				game.move();
+
+				// 2. Invocació del renderitzat gràfic
+				// Nota: repaint() és segur cridar-lo des de fora de l'EDT
+				game.repaint();
+
+				// 3. Control del temps (Thread.sleep)
+				try {
+					Thread.sleep(10); // Pausa de 10 mil·lisegons
+				} catch (InterruptedException e) {
+					// Si el fil s'interromp, sortim del bucle
+					e.printStackTrace();
+					break;
+				}
+			}
+		}).start(); // Arrencada del fil
 	}
 }
