@@ -15,7 +15,7 @@ public class Connexio {
         try {
             if (cn == null || cn.isClosed()) {
                 Class.forName("com.mysql.cj.jdbc.Driver");
-                // REVISA LA IP: localhost o 100.2.15?
+                
                 cn = DriverManager.getConnection("jdbc:mysql://localhost:3306/retro_tennis", "root", "7022");
             }
         } catch (Exception ex) {

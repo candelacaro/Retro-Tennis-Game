@@ -23,12 +23,14 @@ public class Ball {
 	private int xVel = 1;
 	// Direcció del vector de moviment en el eix de les ordenades
 	private int yVel = 1;
-	// Declaració i inicialització de final, mida fixa de la pilota
-	private static final int DIAMETER = 35;
 	
+	//Declaració i inicialització de final, mida fixa de la pilota
+	private static final int DIAMETER = 35;
+	//Declaració i inicialització de final
 	private static final double VELOCITAT_INICIAL = 1;
 	// Declaració i inicialització de final, velocitat que aumenta per cada nivell
 	private static final double INCREMENT_VELOCITAT = 1.10;
+	
 	// Connexió amb la instància principal per accedir a l'estat del joc.
 	private Game game;
 	

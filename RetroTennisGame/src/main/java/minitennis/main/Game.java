@@ -40,6 +40,7 @@ public class Game extends JPanel {
 	List<Ball> balls = new ArrayList<>();
 	// Llista d'obstacles a destruir
 	List<Obstacle> obstacles = new ArrayList<>();
+	
 	/*
 	 * Declaració i inicialització de variable estàtica, que representa el nivell
 	 * del joc
