@@ -23,6 +23,7 @@ import minitennis.objects.Ball;
 import minitennis.objects.Obstacle;
 import minitennis.objects.Racquet;
 import minitennis.sound.Sound;
+import minitennis.utils.Utils;
 
 /**
  * Classe Game que hereta de JPanel, funciona com a motor principal del joc.
@@ -30,6 +31,8 @@ import minitennis.sound.Sound;
  * Chenovart
  */
 public class Game extends JPanel {
+	
+	private final int NIVELL_MINIM_OBSTACLES = 2;
 	private static final long serialVersionUID = 1L;
 	// Instància dels elements del joc.
 	// Instància d'objecte de la classe Racquet: La pala del jugador
@@ -46,6 +49,7 @@ public class Game extends JPanel {
 	 * del joc
 	 */
 	public static int level;
+	
 	// Declaració i inicialització de variable, puntuació basada en el temps
 	private long score = 0;
 	/*
@@ -163,7 +167,7 @@ public class Game extends JPanel {
 		// Actualització de temps
 		lastPointUpdate = now;
 		// Estructura condicional on avaluem si arribem als 20s
-		if (now - startTime >= 20000) {
+		if (now - startTime >= Utils.TIME_TO_LEVEL_UP) {
 			// Incrementem el nivell
 			level++;
 			// S'actualitza el temps
@@ -173,7 +177,7 @@ public class Game extends JPanel {
 				double pre = b.getSpeed();
 				// Incrementem la velocitat de la bola amb el mètode increaseSpeed()
 				b.increaseSpeed();
-				System.out.println("INCREASE SPEED: pre:" + pre + ", post:" + b.getSpeed());
+				
 			}
 			// Actualitzem els obstacles segons el nivell
 			actualitzarObstacles(level);
@@ -193,8 +197,9 @@ public class Game extends JPanel {
 		updateLevel();
 		// Fem servir el mètode .move() per moure la raqueta
 		racquet.move();
+		
 		// Estructura condicional on si arriab al nivell 16 surt una bola nova
-		if (level >= 16 && balls.size() < 2) {
+		if (level >= Utils.LEVEL_FOR_SECOND_BALL && balls.size() < 2) {
 			// Instància d'objecte (bola) de la classe Ball
 			Ball b2 = new Ball(this);
 			// Li posem velocitat a la bola
@@ -270,7 +275,7 @@ public class Game extends JPanel {
 	 */
 	private void multiplicarBoles() {
 		// Estructura condicional que avalua si la llista balls té menys de 6
-		if (balls.size() < 6) {
+		if (balls.size() < Utils.MAX_BALLS) {
 			/*
 			 * Declaració i inicialització de variable que igualem al número d'elements de
 			 * la llista
@@ -334,7 +339,7 @@ public class Game extends JPanel {
 		// Amb el mètode .clear() netejem els obstacles
 		obstacles.clear();
 		// Estructura condicional avalua si hem arribat al nivell 2
-		if (nivellActual < 2) {
+		if (nivellActual < NIVELL_MINIM_OBSTACLES) {
 			// No retornem res
 			return;
 		}
@@ -342,7 +347,7 @@ public class Game extends JPanel {
 		 * Declaració i inicialització de variable que calcula el numObstacles, com a
 		 * màxim 10. Ho controlem amb el mètode Math.min()
 		 */
-		int numObstacles = Math.min(nivellActual - 1, 10);
+		int numObstacles = Math.min(nivellActual - 1, Utils.MAX_OBSTACLES);
 		// Declaració i incialització de random
 		Random rand = new Random();
 		/*
