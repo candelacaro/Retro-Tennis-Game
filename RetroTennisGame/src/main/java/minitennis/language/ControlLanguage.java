@@ -1,11 +1,13 @@
 package minitennis.language;
 
+import minitennis.utils.Utils;
+
 /**
  * 
  */
 public class ControlLanguage {
 	// Defineixen els identificadors d'idioma suportats per l'aplicació
-	private final String IDIOMA_PER_DEFECTE = "EN";
+	private final String IDIOMA_PER_DEFECTE = Utils.LANG_EN;
 	final static String CATALA = "CAT";
 	final static String CASTELLA = "ES";
 	final static String ANGLES = "EN";

@@ -26,7 +26,6 @@ public class Obstacle {
     private static final int WIDTH = 26;
     //Declaració i inicialització de finals per la mida de l'alçada de la caixa de xoc
     private static final int HEIGHT = 28;
-    
     //Declaració i inicialització de finals per la mida de l'amplada de l'imatge
     private static final int IMG_WIDTH = 30;
     //Declaració i inicialització de finals per la mida de l'alçada de l'imatge
