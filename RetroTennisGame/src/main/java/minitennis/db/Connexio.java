@@ -4,88 +4,87 @@ import java.sql.*;
 
 public class Connexio {
 
-	private Connection cn = null;
+    private Connection cn = null;
 
-	// Connexió a la base de dades
-	public Connexio() {
-		cn = null;
-		try {
+    public Connexio() {
+        connectar();
+    }
 
-			if (cn == null || cn.isClosed()) {
+    // Mètode separat per gestionar la connexió i reobrir-la si cal
+    private void connectar() {
+        try {
+            if (cn == null || cn.isClosed()) {
+                Class.forName("com.mysql.cj.jdbc.Driver");
+                // REVISA LA IP: localhost o 100.2.15?
+                cn = DriverManager.getConnection("jdbc:mysql://localhost:3306/retro_tennis", "root", "7022");
+            }
+        } catch (Exception ex) {
+            System.out.println("Error al connectar: " + ex.getMessage());
+        }
+    }
 
-				Class.forName("com.mysql.cj.jdbc.Driver");
+    public void guardarPartida(String nombre, int puntuacion, String idioma) {
+        connectar(); // Ens assegurem que la connexió estigui oberta
+        String sql = "{CALL ranking10millors(?, ?, ?)}";
 
-				cn = DriverManager.getConnection("jdbc:mysql://localhost:3306/retro_tennis", "root", "1234");
-			}
+        // NOMÉS posem el Statement al try-with-resources, NO la Connection cn
+        try (CallableStatement cs = cn.prepareCall(sql)) {
+            cs.setString(1, nombre);
+            cs.setInt(2, puntuacion);
+            cs.setString(3, idioma);
 
-		} catch (Exception ex) {
+            boolean resultados = cs.execute();
 
-			System.out.println("Error al connectar: " + ex.getMessage());
-		}
+            if (resultados) {
+                try (ResultSet rs = cs.getResultSet()) {
+                    System.out.println("\n--- TOP 10 ---");
+                    while (rs.next()) {
+                        System.out.println("Nom: " + rs.getString("name") +
+                                " | Punts: " + rs.getInt("score") +
+                                " | Data: " + rs.getTimestamp("date") +
+                                " | Idioma: " + rs.getString("language"));
+                    }
+                }
+            }
+            System.out.println("Partida guardada correctament.");
+        } catch (SQLException e) {
+            System.out.println("Error al guardar la partida: " + e.getMessage());
+        }
+    }
 
-	}
+    public void consultarRanking() {
+        connectar();
+        String sql = "SELECT name, score, date, language FROM PARTIDES ORDER BY score DESC LIMIT 10";
 
-	/**
-	 * Guarda una partida executant el procediment emmagatzemat i mostra el TOP 10.
-	 */
-	public void guardarPartida(String nombre, int puntuacion, String idioma) {
+        // El try-with-resources tancarà el Statement i el ResultSet, però NO 'cn'
+        try (Statement st = cn.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
 
-		String sql = "{CALL ranking10millors(?, ?, ?)}";
+            System.out.println("\n--- RANKING ACTUAL ---");
+            while (rs.next()) {
+                System.out.println("Nom: " + rs.getString("name") +
+                        " | Punts: " + rs.getInt("score") +
+                        " | Data: " + rs.getTimestamp("date") +
+                        " | Idioma: " + rs.getString("language"));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al consultar la BD: " + e.getMessage());
+        }
+    }
+    
+    
+    public static void main (String[] args) {
 
-		try (Connection conn = cn; CallableStatement cs = conn.prepareCall(sql)) {
+    	Connexio c = new Connexio();
 
-			// Passem els paràmetres al procediment
-			cs.setString(1, nombre);
-			cs.setInt(2, puntuacion);
-			cs.setString(3, idioma);
 
-			// Executem el procediment
-			boolean resultados = cs.execute();
 
-			// Mostrem el ranking retornat pel procediment
-			if (resultados) {
+    	c.guardarPartida("JugadorTest", 5000, "ES");
 
-				ResultSet rs = cs.getResultSet();
 
-				System.out.println("\n--- TOP 10 ---");
 
-				while (rs.next()) {
+    	c.consultarRanking();
 
-					System.out.println("Nom: " + rs.getString("name") + " | Punts: " + rs.getInt("score") + " | Data: "
-							+ rs.getTimestamp("date") + " | Idioma: " + rs.getString("language"));
-				}
+    	}
 
-				rs.close();
-			}
-
-			System.out.println("Partida guardada correctament.");
-
-		} catch (SQLException e) {
-
-			System.out.println("Error al guardar la partida: " + e.getMessage());
-		}
-	}
-
-	/**
-	 * Consulta manual del TOP 10 sense guardar partida.
-	 */
-	public void consultarRanking() {
-
-		String sql = "SELECT name, score, date, language " + "FROM PARTIDES " + "ORDER BY score DESC " + "LIMIT 10";
-
-		try (Connection conn = cn; Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(sql)) {
-
-			System.out.println("\n--- RANKING ACTUAL ---");
-
-			while (rs.next()) {
-
-				System.out.println("Nom: " + rs.getString("name") + " | Punts: " + rs.getInt("score") + " | Data: "
-						+ rs.getTimestamp("date") + " | Idioma: " + rs.getString("language"));
-			}
-
-		} catch (SQLException e) {
-
-			System.out.println("Error al consultar la BD: " + e.getMessage());
-		}
-	}
-}
+    	}

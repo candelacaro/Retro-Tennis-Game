@@ -358,17 +358,17 @@ public class Game extends JPanel {
 	 * Mètode que controla quan la bola ha caigut i perds
 	 */
 	public void gameOver() {
-		// Reproducció de so amb mètode de la classe sound
-		getSonido().stopFondo();
-		// Reproducció de so gameOver
-		getSonido().playGameOver();
-		// Guardar partida en la BD
-		Connexio c = new Connexio();
-		c.guardarPartida(playerName, (int) score, language);
-
-		JOptionPane.showMessageDialog(this, "GAME OVER\nJugador: " + playerName + "\nPuntuació total: " + score);
-
-		System.exit(0);
+		sonido.playGameOver();
+	    // Inserció de dades automàtica al perdre
+	    Connexio conn = new Connexio();
+	    conn.guardarPartida(playerName, (int) score, language);
+	    
+	    int result = JOptionPane.showConfirmDialog(this, "Vols tornar a jugar?", "Game Over", JOptionPane.YES_NO_OPTION);
+	    if (result == JOptionPane.YES_OPTION) {
+	        // Lògica per reiniciar el joc
+	    } else {
+	        System.exit(0);
+	    }
 	}
 
 	public Racquet getRacquet () {
