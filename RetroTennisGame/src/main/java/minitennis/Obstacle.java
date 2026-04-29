@@ -58,9 +58,13 @@ public class Obstacle {
             URL urlNormal = getClass().getResource("fantasmaAmarillo.png");
             URL urlDanyat = getClass().getResource("fantasmaRojo.png");
            
+            //Estructura condicional on s'avalua si la imatge no es nul·la
             if (urlNormal != null) {
+            		//Si no es nul·la, mostrem la imatge
                 imgNormal = new ImageIcon(urlNormal).getImage();
             }
+            
+            //Estructura condicional on s'avalua si la imatge no es nul·la
             if (urlDanyat != null) {
                 imgDanyat = new ImageIcon(urlDanyat).getImage();
             }
