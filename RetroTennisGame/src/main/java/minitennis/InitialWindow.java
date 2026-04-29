@@ -101,7 +101,7 @@ public class InitialWindow {
 
 					//Estructura condicional on si accepta les regles, arrenquem el motor del joc
 					if (acceptaRegles == JOptionPane.OK_OPTION) {
-						llançarJoc(fieldNom.getText(), (int) comboNivell.getSelectedItem());
+						llançarJoc(fieldNom.getText(), (int) comboNivell.getSelectedItem(), triaIdioma);
 					} else {
 						//Si no sortim
 						System.exit(0);
@@ -120,9 +120,9 @@ public class InitialWindow {
 	 * @param nom Identificador de l'usuari.
 	 * @param nivell Valor sencer que determina la dificultat inicial.
 	 */
-	private void llançarJoc(String nom, int nivell) {
+	private void llançarJoc(String nom, int nivell, String language) {
 		// Instancia de la classe principal del motor del joc
-		Game game = new Game(nom, nivell);
+		Game game = new Game(nom, nivell, language);
 		// Instancia del contenidor de finestra
 		JFrame frame = new JFrame("Retro Tenis - " + nom);
 		// Addició de l'objecte 'game' (panell del joc)

@@ -1,4 +1,8 @@
 package minitennis;
+
+/**
+ * 
+ */
 public class ControlLanguage {
 	// Defineixen els identificadors d'idioma suportats per l'aplicació
 	private final String IDIOMA_PER_DEFECTE = "EN";
