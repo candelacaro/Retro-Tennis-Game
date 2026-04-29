@@ -29,7 +29,7 @@ public class ControlLanguage {
 		// Estructura de control per a la selecció de l'idioma
 		switch (idiomaActual) {
 
-		case CATALA:
+		case CATALA: // Cas en què l'idioma actiu és el Català
             switch (clau) {
             case "titol_menu": return "RETRO TENNIS";
             case "regles": return "Regles: Mou la pala per evitar que la bola caigui.";
@@ -42,9 +42,9 @@ public class ControlLanguage {
             case "cambiar_idioma": return "CANVIAR IDIOMA";
             case "sortir": return "SORTIR";
             case "guia_menu": return "Fletxes per navegar, ENTER per seleccionar";
-            default: return clau;
+            default: return clau; // Si no troba la clau, retorna el nom de la clau
             }
-        case CASTELLA:
+        case CASTELLA: // Cas en què l'idioma actiu és el Castellà
             switch (clau) {
             case "titol_menu": return "RETRO TENNIS";
             case "regles": return "Reglas: Mueve la pala para evitar que la bola caiga.";
@@ -59,7 +59,7 @@ public class ControlLanguage {
             case "guia_menu": return "Flechas para navegar, ENTER para seleccionar";
             default: return clau;
             }
-        default: // English
+        default: // Idioma per defecte: English (s'executa si no és ni CAT ni ES)
             switch (clau) {
             case "titol_menu": return "RETRO TENNIS";
             case "regles": return "Rules: Move the paddle to prevent the ball from falling.";
