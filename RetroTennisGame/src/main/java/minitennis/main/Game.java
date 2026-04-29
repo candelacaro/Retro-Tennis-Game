@@ -383,13 +383,31 @@ public class Game extends JPanel {
 	                      "Jugador: " + playerName + "\n" +
 	                      "Puntuació: " + score + " ms\n\n" +
 	                      "--- TOP 10 RANKING ---\n" + 
-	                      rankingFinal;
+	                      rankingFinal+ "\n" +
+	                      "Vols tornar a jugar?";
 
 	    // 4. Mostrar la finestra amb tota la informació
 	    JOptionPane.showMessageDialog(this, missatge, "Resultats de la Partida", JOptionPane.INFORMATION_MESSAGE);
 
-	    // 5. Tancar el joc
-	    System.exit(0);
+	 // 4. Mostrar finestra amb opcions (SÍ / NO)
+	    int resposta = JOptionPane.showConfirmDialog(this, missatge, "Fi de la partida", 
+	                   JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+
+	    if (resposta == JOptionPane.YES_OPTION) {
+	        reiniciarJoc();
+	    } else {
+	        System.exit(0);
+	    }
+	}
+	
+	private void reiniciarJoc() {
+	    // Obtenim la finestra (JFrame) que conté aquest panell (Game)
+	    JFrame topFrame = (JFrame) javax.swing.SwingUtilities.getWindowAncestor(this);
+	    topFrame.dispose(); // Tanquem la finestra actual del joc
+	    
+	    // Tornem a obrir el menú inicial
+	    InitialWindow inicial = new InitialWindow();
+	    inicial.mostrarMenu();
 	}
 
 	public Racquet getRacquet () {
