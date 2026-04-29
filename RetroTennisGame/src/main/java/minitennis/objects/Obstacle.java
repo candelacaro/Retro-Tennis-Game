@@ -1,10 +1,12 @@
-package minitennis;
+package minitennis.objects;
 
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.net.URL;
 import java.awt.Image;
 import javax.swing.ImageIcon;
+
+import minitennis.main.Game;
 
 /**
  * Classe Obstacle que utilitza exclusivament imatges per al renderitzat.

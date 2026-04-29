@@ -1,4 +1,4 @@
-package minitennis;
+package minitennis.main;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -19,6 +19,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import minitennis.db.Connexio;
+import minitennis.objects.Ball;
+import minitennis.objects.Obstacle;
+import minitennis.objects.Racquet;
+import minitennis.sound.Sound;
 
 /**
  * Classe Game que hereta de JPanel, funciona com a motor principal del joc.
@@ -29,9 +33,9 @@ public class Game extends JPanel {
 	private static final long serialVersionUID = 1L;
 	// Instància dels elements del joc.
 	// Instància d'objecte de la classe Racquet: La pala del jugador
-	Racquet racquet = new Racquet(this);
+	private Racquet racquet = new Racquet(this);
 	// Instància d'objecte de la classe Sound: Gestor de sons
-	Sound sonido = new Sound();
+	private Sound sonido = new Sound();
 	// Llista de boles actives (permet múltiples)
 	List<Ball> balls = new ArrayList<>();
 	// Llista d'obstacles a destruir
@@ -173,13 +177,13 @@ public class Game extends JPanel {
 			// Actualitzem els obstacles segons el nivell
 			actualitzarObstacles(level);
 		}
-		sonido.canviarMusica(level);
+		getSonido().canviarMusica(level);
 	}
 
 	/**
 	 * Mètode que executa tota la lògica de moviment del frame actual
 	 */
-	protected void move() {
+	public void move() {
 		// Estructura condicional que avalua si està fora de la pantalla
 		if (getWidth() <= 0 || getHeight() <= 0) {
 			return;
@@ -355,9 +359,9 @@ public class Game extends JPanel {
 	 */
 	public void gameOver() {
 		// Reproducció de so amb mètode de la classe sound
-		sonido.stopFondo();
+		getSonido().stopFondo();
 		// Reproducció de so gameOver
-		sonido.playGameOver();
+		getSonido().playGameOver();
 		// Guardar partida en la BD
 		Connexio c = new Connexio();
 		c.guardarPartida(playerName, (int) score, language);
@@ -366,5 +370,23 @@ public class Game extends JPanel {
 
 		System.exit(0);
 	}
+
+	public Racquet getRacquet () {
+		return racquet;
+	}
+
+	public void setRacquet(Racquet racquet) {
+		this.racquet = racquet;
+	}
+
+	public Sound getSonido() {
+		return sonido;
+	}
+
+	public void setSonido(Sound sonido) {
+		this.sonido = sonido;
+	}
+
+	
 
 }

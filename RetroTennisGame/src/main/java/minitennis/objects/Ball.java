@@ -1,10 +1,12 @@
-package minitennis;
+package minitennis.objects;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.util.List;
 import javax.swing.ImageIcon;
+
+import minitennis.main.Game;
 /**
 * Classe ball que gestiona el comportament de la pilota, incloent el moviment,
 * el renderitzat i la lògica de col·lisió amb parets i obstacles.
@@ -55,8 +57,7 @@ public class Ball {
 	 * Mètode que incrementa la velocitat de la pilota
 	 */
 	public void increaseSpeed() {
-	    // Multiplicamos la velocidad actual por el factor de incremento (1.10)
-	    this.speed = this.speed * INCREMENT_VELOCITAT;
+		speed *= INCREMENT_VELOCITAT;
 	}
 	/**
 	 * Mètode que defineix la velocitat de la pilota.
@@ -121,13 +122,13 @@ public class Ball {
 		/*
 		 * Estructura condicional, on es controla lògica de col·lisió de la raqueta
 		 */
-		if (ballRect.intersects(game.racquet.getBounds())) {
+		if (ballRect.intersects(game.getRacquet().getBounds())) {
 			// Canvia direcció cap amunt
 			yVel = -1;
 			// Reposiciona per evitar solapament
-			nextY = game.racquet.getTopY() - DIAMETER;
+			nextY = game.getRacquet().getTopY() - DIAMETER;
 			// Reprodueix so de rebot
-			game.sonido.playGolpe();
+			game.getSonido().playGolpe();
 		}
 		// Instància de classe Obstacle, lògica de col·lisió detallada amb obstacles
 		Obstacle objetoADestruir = null;
@@ -192,7 +193,7 @@ public class Ball {
 					// Indiquem el osbtacle
 					objetoADestruir = o;
 				// Reproducció de so de col·lisió
-				game.sonido.playGolpe();
+				game.getSonido().playGolpe();
 			}
 		}
 		// Corregim la posició de x

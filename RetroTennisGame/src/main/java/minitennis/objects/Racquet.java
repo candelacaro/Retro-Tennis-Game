@@ -1,8 +1,10 @@
-package minitennis;
+package minitennis.objects;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
+
+import minitennis.main.Game;
 /**
 * Definició de la classe Racquet.
 * Aquesta entitat representa l'element controlable per l'usuari.
@@ -44,6 +46,42 @@ public class Racquet {
 		this.game = game;
 	}
 	
+	public int getX() {
+		return x;
+	}
+
+	public void setX(int x) {
+		this.x = x;
+	}
+
+	public int getxVelocitat() {
+		return xVelocitat;
+	}
+
+	public void setxVelocitat(int xVelocitat) {
+		this.xVelocitat = xVelocitat;
+	}
+
+	public Game getGame() {
+		return game;
+	}
+
+	public void setGame(Game game) {
+		this.game = game;
+	}
+
+	public static int getY() {
+		return Y;
+	}
+
+	public static int getWidth() {
+		return WIDTH;
+	}
+
+	public static int getHeight() {
+		return HEIGHT;
+	}
+
 	/**
     * Actualitza l'estat de la posició de l'objecte.
     * Implementa una validació de límits per evitar que
@@ -115,13 +153,13 @@ public class Racquet {
 		if(e.getKeyCode() == KeyEvent.VK_LEFT) {
 			
 			// Decrement vector cap a l'esquerra
-			xVelocitat = -2;
+			xVelocitat = -6;
 		}
 		
 		if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
 			
 			//Increment vector cap a la dreta
-			xVelocitat = 2;
+			xVelocitat = 6;
 		}
 		
 	}

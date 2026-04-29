@@ -1,4 +1,5 @@
-package minitennis;
+package minitennis.main;
+
 /**
 * Definició de la classe MainApp.
 * Aquesta classe actua com el punt d'entrada principal del programa.

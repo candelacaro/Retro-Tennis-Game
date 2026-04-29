@@ -1,9 +1,12 @@
-package minitennis;
+package minitennis.main;
 
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+
+import minitennis.language.ControlLanguage;
+import minitennis.language.LanguageSelectionMenu;
 
 /**
  * Classe InitialWindow. Aquesta classe gestiona la configuració

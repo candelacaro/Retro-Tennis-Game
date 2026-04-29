@@ -1,6 +1,10 @@
-package minitennis;
+package minitennis.menu;
 
 import javax.swing.*;
+
+import minitennis.language.ControlLanguage;
+import minitennis.main.Game;
+
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
