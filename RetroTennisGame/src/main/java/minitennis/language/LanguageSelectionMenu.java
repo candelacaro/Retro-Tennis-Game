@@ -22,7 +22,7 @@ public class LanguageSelectionMenu extends JPanel {
 	private final String IDIOMA_EN = "ENGLISH";
 	private final String IDIOMA_CAT = "CATALÀ";
 	
-	// Declarem els int en final
+	// Declarem els int en final per la selecció d'idiomes
 	private final int ANGLES = 0;
 	private final int CASTELLA = 1;
 	private final int CATALA = 2;
@@ -71,6 +71,7 @@ public class LanguageSelectionMenu extends JPanel {
             }
         });
     }
+    
     /**
      * Mètode per aplicar l'idioma i canviar al menú principal
      */
@@ -130,9 +131,15 @@ public class LanguageSelectionMenu extends JPanel {
         // Lògica per mostrar el títol de "Seleccionar" depenent de l'idioma escollit
         String titulo;
         // Depenent de l'idioma que anirem a escollir canvis el titol
-        if (seleccion == 0) titulo = "SELECT"; // FINALSS//////////
-        else if (seleccion == 1) titulo = "SELECCIONAR"; // FINALSS/////////////
-        else titulo = "SELECCIONAR "; //FINALSSSSS/////
+        if (seleccion == ANGLES) {
+        		titulo = "SELECT";
+        }
+        else if (seleccion == CASTELLA) {
+        		titulo = "SELECCIONAR"; 
+        }
+        else {
+        		titulo = "SELECCIONAR "; 
+        }
 
         // Afegim el color de titol a groc
         g2.setColor(Color.YELLOW);
@@ -164,9 +171,14 @@ public class LanguageSelectionMenu extends JPanel {
         // Asignem el color gris
         g2.setColor(Color.GRAY);
         // El text de guia canvia depenent de l'idioma
-        String guia = (seleccion == 0) ? "UP/DOWN to move, ENTER to select" : 
-                     (seleccion == 1) ? "Flechas para mover, ENTER para elegir" : 
-                                       "Fletxes per moure, ENTER per triar";
+        String guia;
+        if(seleccion == ANGLES) {
+        		guia = "UP/DOWN to move, ENTER to select";
+        } else if(seleccion == CASTELLA) {
+        		guia = "Flechas para mover, ENTER para elegir";
+        } else {
+        		guia = "Fletxes per moure, ENTER per triar";
+        }
         // S'aplica a la part inferior
         g2.drawString(guia, 20, 360);
     }

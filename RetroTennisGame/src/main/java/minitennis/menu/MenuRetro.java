@@ -28,7 +28,12 @@ public class MenuRetro extends JPanel {
     private int nivel = 1;
     private String nombre = "";
     private Image fondo;
-    private static final int OPCIO_JUGAR = 0, OPCIO_CONTROLS = 2, OPCIO_CANVIAR_IDIOMA = 3, OPCIO_SORTIR = 4;
+    
+    //Declaració i incialització de finals
+    private static final int OPCIO_JUGAR = 0; 
+    private static final int OPCIO_CONTROLS = 2;
+    private static final int OPCIO_CANVIAR_IDIOMA = 3;
+    private static final int OPCIO_SORTIR = 4;
 
     /**
      * Constructor del menu que configura el fons, textos i controls
@@ -218,6 +223,7 @@ public class MenuRetro extends JPanel {
 
     /**
      * Treballem tota la part visual, i cridem cada vegade que demanem a la visual.
+     * @param g, Objecte Graphics
      */
     @Override
     protected void paintComponent(Graphics g) {

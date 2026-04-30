@@ -43,6 +43,7 @@ public class Ball {
 	 * augmenta amb el nivell
 	 */
 	private double speed = 1.0;
+	
 	/**
 	 * Constructor Ball
 	 *
@@ -56,6 +57,7 @@ public class Ball {
 			System.out.println("No s'ha trobat la imatge pacman.png");
 		}
 	}
+	
 	/**
 	 * Mètode que incrementa la velocitat de la pilota
 	 */
@@ -71,6 +73,7 @@ public class Ball {
 	        speed = Utils.MAX_BALL_SPEED;
 	    }
 	}
+	
 	/**
 	 * Mètode que defineix la velocitat de la pilota.
 	 *
@@ -79,6 +82,7 @@ public class Ball {
 	public void setSpeed(double speed) {
 		this.speed = speed;
 	}
+	
 	/**
 	 * Mètode GETTER, obté la velocitat actual.
 	 *
@@ -87,6 +91,7 @@ public class Ball {
 	public double getSpeed() {
 		return speed;
 	}
+	
 	/**
 	 * Mètode que calcula el moviment i gestiona les col·lisions amb parets, raqueta
 	 * i obstacles.
@@ -215,6 +220,7 @@ public class Ball {
 		// Retornem l'objecte que hem de destruir
 		return objetoADestruir;
 	}
+	
 	/**
 	 * Mètode que dibuixa la representació gràfica de la pilota (Pac-Man) a la
 	 * pantalla.
@@ -230,6 +236,7 @@ public class Ball {
 			g.fillOval(x, y, DIAMETER, DIAMETER);
 		}
 	}
+	
 	/**
 	 * Mètode que retorna l'àrea rectangular de la pilota per a càlculs de
 	 * col·lisió.

@@ -27,13 +27,15 @@ import minitennis.utils.Utils;
 
 /**
  * Classe Game que hereta de JPanel, funciona com a motor principal del joc.
- * * @author Candela Cabello, André Medinas, Izan Perez, Daner Coria i Adrià
+ * @author Candela Cabello, André Medinas, Izan Perez, Daner Coria i Adrià
  * Chenovart
  */
 public class Game extends JPanel {
 	
+	//Declració i inicialització de final per el control de nivells on ha de sortir obstacles
 	private final int NIVELL_MINIM_OBSTACLES = 2;
 	private static final long serialVersionUID = 1L;
+	
 	// Instància dels elements del joc.
 	// Instància d'objecte de la classe Racquet: La pala del jugador
 	private Racquet racquet = new Racquet(this);
@@ -70,7 +72,7 @@ public class Game extends JPanel {
 	/**
 	 * Constructor del joc. Inicialitza components i escoltadors d'entrada.
 	 *
-	 * @param playerName,    nom del jugador
+	 * @param playerName, nom del jugador
 	 * @param selectedLevel, nivell inicial seleccionat
 	 */
 	public Game(String playerName, int selectedLevel, String language) {
@@ -84,13 +86,15 @@ public class Game extends JPanel {
 	    // Fórmula: VelocidadBase * (1.2 ^ (Nivel - 1))
 	    double velocidadCalculada = Utils.VELOCIDAD_BASE * Math.pow(Utils.INCREMENTO_POR_NIVEL, selectedLevel - 1);
 	    
-	    // Aplicamos el "Clamp" (limitador): nunca superará el MAX_BALL_SPEED
+	    // Declaració i inicialització de variable que serveix com a limitador), mai superará el MAX_BALL_SPEED
 	    double velocidadFinal = Math.min(velocidadCalculada, Utils.MAX_BALL_SPEED);
 	    
+	    //Modifiquem la velocitat de primeraBola
 	    primeraBola.setSpeed(velocidadFinal);
+	    //Afegim a la llista la bola
 	    balls.add(primeraBola);
 	    
-		// Estructura de control d'errors TRY-CATCH, gestion el fons del videojoc
+		// Estructura de control d'errors TRY-CATCH, gestiona el fons del videojoc
 		try {
 
 			/*
@@ -98,7 +102,7 @@ public class Game extends JPanel {
 			 * posterior renderització en el panell del joc.
 			 */
 			fons = new ImageIcon(getClass().getResource("/Imatge/fondovideojuego.jpg")).getImage();
-			// Càrrega de l'array de fondos
+			// Càrrega de l'array de fons
 			fondos[0] = new ImageIcon(getClass().getResource("/Imatge/fondovideojuego.jpg")).getImage();
 			fondos[1] = new ImageIcon(getClass().getResource("/Imatge/fondovideojuego2.jpg")).getImage();
 			fondos[2] = new ImageIcon(getClass().getResource("/Imatge/fondovideojuego3.jpg")).getImage();

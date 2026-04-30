@@ -15,7 +15,7 @@ import minitennis.utils.Utils;
  * configuració de llenguatge i la instanciació del joc.
  * 
  * @author André Medinas, Candela Cabello, Daner Coria, Izan Perez i Adrià
- *         Chenovart
+ * Chenovart
  * 
  */
 public class InitialWindow {
@@ -49,7 +49,7 @@ public class InitialWindow {
 		frame.setLocationRelativeTo(null); // Centrat a la pantalla
 		frame.setVisible(true);
 
-		// Molt important: demanar el focus perquè el teclat funcioni al moment
+		//Demanem el focus perquè el teclat funcioni al moment
 		selectionMenu.requestFocusInWindow();
 	}
 
@@ -57,8 +57,8 @@ public class InitialWindow {
 	 * Mètode privat per a la inicialització del contenidor principal i el bucle del
 	 * joc.
 	 * 
-	 * @param nom    Identificador de l'usuari.
-	 * @param nivell Valor sencer que determina la dificultat inicial.
+	 * @param nom, Identificador de l'usuari.
+	 * @param nivell, Valor sencer que determina la dificultat inicial.
 	 */
 	private void llançarJoc(String nom, int nivell, String language) {
 		// Instancia de la classe principal del motor del joc
@@ -79,16 +79,16 @@ public class InitialWindow {
 		
 		new Thread(() -> {
 			while (true) {
-				// 1. Actualització de la lògica de posicions
+				// Actualització de la lògica de posicions
 				game.move();
 
-				// 2. Invocació del renderitzat gràfic
-				// Nota: repaint() és segur cridar-lo des de fora de l'EDT
+				//Invocació del renderitzat gràfic
 				game.repaint();
 
 				// 3. Control del temps (Thread.sleep)
 				try {
-					Thread.sleep(10); // Pausa de 10 mil·lisegons
+					// Pausa de 10 mil·lisegons
+					Thread.sleep(10); 
 				} catch (InterruptedException e) {
 					// Si el fil s'interromp, sortim del bucle
 					e.printStackTrace();

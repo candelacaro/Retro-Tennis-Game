@@ -77,7 +77,7 @@ public class NombreUsuarioMenu extends JPanel {
                 	// Obtenim el caracter fisic de la tecla
                     char c = e.getKeyChar();
                     // Comprova si es una lletra, nombre o espai
-                    if (Character.isLetterOrDigit(c) || c == ' ') { // DECLARAR FINAL///////////////////////
+                    if (Character.isLetterOrDigit(c) || c == ' ') { 
                         nombre.append(c);
                     }
                 }
@@ -87,7 +87,7 @@ public class NombreUsuarioMenu extends JPanel {
         });
     }
     /**
-     * Tornem al menú principal
+     * Mètode per tornar al menú principal
      */
     private void volverAlMenuPrincipal() {
     	// Obtenim la finestra principal
@@ -108,8 +108,9 @@ public class NombreUsuarioMenu extends JPanel {
             menuRetro.requestFocusInWindow();
         }
     }
+    
     /**
-     * Confirmem el nom i llançar la finestra del joc
+     * Mètode per confirmar el nom i llançar la finestra del joc
      */
     private void confirmarYEmpezar() {
     	// Obtenim la finestra principal
@@ -120,8 +121,9 @@ public class NombreUsuarioMenu extends JPanel {
             lanzarJuego(frame, nombre.toString(), nivel);
         }
     }
+    
     /**
-     * Crea la finestra definitiva del joc i inicia el bucle
+     * Mètode per crear la finestra definitiva del joc i inicia el bucle
      * 
      * @param frame es la finestra actual on es troba
      * @param nom es el nom que li anirem a declarar
@@ -157,7 +159,7 @@ public class NombreUsuarioMenu extends JPanel {
     }
     
 	 /**
-	  * Dibuixem la interfície gràfica del menu
+	  * Mètode per dibuixar la interfície gràfica del menu
 	  */	
     @Override
     protected void paintComponent(Graphics g) {

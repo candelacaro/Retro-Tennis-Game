@@ -8,10 +8,11 @@ import java.sql.*;
  * 
  * @autor André Medinas, Candela Cabello, Daner Coria, Izan Perez i Adrià Chenovart
  */
-public class Connexio {// Objecte que manté la connexió activa amb la BD
-	// Constructor: s'executa en crear l'objecte i estableix el primer intent de connexió
+public class Connexio {
+	// Objecte que manté la connexió activa amb la BD
     private Connection cn = null;
 
+    //Constructor: s'executa en crear l'objecte i estableix el primer intent de connexió
     public Connexio() {
         connectar();
     }
@@ -26,7 +27,7 @@ public class Connexio {// Objecte que manté la connexió activa amb la BD
             if (cn == null || cn.isClosed()) {
             	// Carrega dinàmicament el Driver de MySQL
                 Class.forName("com.mysql.cj.jdbc.Driver");
-             // Defineix la ruta de la BD, l'usuari i la contrasenya
+             // Defineix la ruta de la BD, l'usuari i la contrasenya (contrasenya de MySQL candela)
                 cn = DriverManager.getConnection("jdbc:mysql://localhost:3306/retro_tennis", "root", "7022");
             }
         } catch (Exception ex) {
@@ -42,17 +43,23 @@ public class Connexio {// Objecte que manté la connexió activa amb la BD
      * @return Cadena de text amb el rànquing dels 10 millors
      */
     public String guardarPartida(String nombre, int puntuacion, String idioma) {
-    	connectar(); // Assegurem que estem connectats abans d'operar
-        StringBuilder sb = new StringBuilder();// Per construir la llista de millors puntuacions
-        String sql = "{CALL ranking10millors(?, ?, ?)}";// Crida al Procediment Emmagatzemat de MySQL
-     // Utilitzem CallableStatement per executar el procediment de la base de dades
+    		// Assegurem que estem connectats abans d'operar
+    		connectar(); 
+    		// Per construir la llista de millors puntuacions
+        StringBuilder sb = new StringBuilder();
+        // Crida al Procediment Emmagatzemat de MySQL
+        String sql = "{CALL ranking10millors(?, ?, ?)}";
+        // Utilitzem CallableStatement per executar el procediment de la base de dades
         try (CallableStatement cs = cn.prepareCall(sql)) {
-            cs.setString(1, nombre);// Assignem el primer paràmetre
-            cs.setInt(2, puntuacion);// Assignem el segon paràmetre
-            cs.setString(3, idioma);// Assignem el tercer paràmetre
-         // Executa la crida
+        		// Assignem el primer paràmetre
+            cs.setString(1, nombre);
+            // Assignem el segon paràmetre
+            cs.setInt(2, puntuacion);
+            // Assignem el tercer paràmetre
+            cs.setString(3, idioma);
+            // Declaració i inicialització de variabel que executa la crida
             boolean resultados = cs.execute();
-         // Si el procediment retorna dades (el rànquing), les processem
+            // Si el procediment retorna dades (el rànquing), les processem
             if (resultados) {
                 try (ResultSet rs = cs.getResultSet()) {
                     int pos = 1;
@@ -72,13 +79,15 @@ public class Connexio {// Objecte que manté la connexió activa amb la BD
             return "Error al desar la partida: " + e.getMessage();
         }
     }
+    
     /**
      * Consulta el top 10 de partides directament mitjançant una sentència SELECT.
      * Els resultats es mostren per la consola del sistema.
      */
     public void consultarRanking() {
         connectar();// Verifiquem la connexió
-        String sql = "SELECT name, score, date, language FROM PARTIDES ORDER BY score DESC LIMIT 10";
+        String sql = "SELECT name, score, date, language FROM PARTIDES ORDER BY "
+        		+ "score DESC LIMIT 10";
 
      // El try-with-resources garanteix que Statement i ResultSet es tanquin automàticament
         try (Statement st = cn.createStatement();

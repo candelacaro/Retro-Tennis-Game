@@ -13,18 +13,21 @@ import java.net.URL;
  * @autor André Medinas, Candela Cabello, Daner Coria, Izan Perez i Adrià Chenovart
  */
 public class Sound {
-	// Atributs per emmagatzemar els fitxers d'àudio en memòria
+	
+	//Atributs per emmagatzemar els fitxers d'àudio en memòria
   private AudioClip fondoActual;
   private AudioClip golpe;
   private AudioClip gameover;
-//Variables per a les diferents pistes de música segons la progressió del joc
-   private AudioClip musicaNivell1;
+  
+  //Variables per a les diferents pistes de música segons la progressió del joc
+  private AudioClip musicaNivell1;
   private AudioClip musicaNivell5;
   private AudioClip musicaNivell10;
   private AudioClip musicaNivell15;
   private AudioClip musicaNivell20;
   private AudioClip musicaNivell25;
   private AudioClip musicaNivell30;
+  
   /**
    * Constructor de la classe. S'encarrega d'inicialitzar i carregar 
    * tots els recursos d'àudio des de la carpeta de recursos.
@@ -102,24 +105,32 @@ public class Sound {
    * Inicia la reproducció en bucle de la música de fons actual.
    */
   public void playFondo() {
-      if (fondoActual != null) fondoActual.loop();
+      if (fondoActual != null) {
+    	  	fondoActual.loop();
+      }
   }
   /**
    * Atura completament la reproducció de la música de fons.
    */
   public void stopFondo() {
-      if (fondoActual != null) fondoActual.stop();
+      if (fondoActual != null) {
+    	  	fondoActual.stop();
+      }
   }
   /**
    * Reprodueix l'efecte de so de col·lisió (cop) una sola vegada.
    */
   public void playGolpe() {
-      if (golpe != null) golpe.play();
+      if (golpe != null) {
+    	  	golpe.play();
+      }
   }
   /**
    * Reprodueix el so de final de partida (Game Over).
    */
   public void playGameOver() {
-      if (gameover != null) gameover.play();
+      if (gameover != null) {
+    	  	gameover.play();
+      }
   }
 }

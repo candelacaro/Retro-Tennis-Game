@@ -19,6 +19,7 @@ public class ControlLanguage {
 	
 	//Emmagatzema el codi de l'idioma actiu en la instància
 	private String idiomaActual = "";
+	
 	/**
     * Mètode mutador per definir l'idioma de treball.
     * @param idioma Codi de l'idioma
@@ -26,6 +27,7 @@ public class ControlLanguage {
 	public void setIdiomaActual(String idioma) {
 		this.idiomaActual = idioma; // Assignació de la referència a l'atribut d'instància
 	}
+	
 	/**
     * Mètode d'accés per obtenir la traducció d'una etiqueta.
     * Implementa una lògica de selecció múltiple per resoldre
