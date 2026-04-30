@@ -85,7 +85,7 @@ public class InitialWindow {
 				//Invocació del renderitzat gràfic
 				game.repaint();
 
-				// 3. Control del temps (Thread.sleep)
+				// Control del temps (Thread.sleep)
 				try {
 					// Pausa de 10 mil·lisegons
 					Thread.sleep(10); 

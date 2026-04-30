@@ -9,7 +9,7 @@ import java.net.URL;
  * Aquesta classe actua com referenciador de la musica de fons.
  * La seva funció és per cada 5 nivells del joc canviar la musica, tindre efectes de so
  * a les colisions de lo bola o quan acaba la partida
- * * @autor André Medinas, Candela Cabello, Daner Coria, Izan Perez i Adrià Chenovart
+ * @autor André Medinas, Candela Cabello, Daner Coria, Izan Perez i Adrià Chenovart
  */
 public class Sound {
 	

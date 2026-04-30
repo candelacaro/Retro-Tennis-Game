@@ -26,8 +26,9 @@ public class NombreUsuarioMenu extends JPanel {
     private int nivel;
     private StringBuilder nombre = new StringBuilder();
     private Image fondo;
+    
     /**
-     * Rep l'idioma i el nivell seleccionat
+     * Constructor que rep l'idioma i el nivell seleccionat
      * 
      * @param controlLang el idioma seleccionat
      * @param nivel el nivel seleccionat

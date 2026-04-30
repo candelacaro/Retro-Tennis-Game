@@ -94,7 +94,8 @@ public class MenuRetro extends JPanel {
     }
 
     /**
-     * Omple el array de Strings amb els textos traduïts, també credem el metode paintComponent per si canviem l'idioma en temps real
+     * Mètode que omple el array de Strings amb els textos traduïts, també 
+     * cridem el metode paintComponent per si canviem l'idioma en temps real
      */
     private void actualizarTextos() {
     	// Totes les opcions oferides al array
@@ -113,7 +114,7 @@ public class MenuRetro extends JPanel {
     }
 
     /**
-     * Lògica per a cada opció del menu quan polsem Enter
+     * Mètode que fa la lògica per a cada opció del menu quan polsem Enter
      */
     private void ejecutarOpcion() {
     	// Utilizem un switch depenent de l'opcio escollida
@@ -157,7 +158,7 @@ public class MenuRetro extends JPanel {
     }
 
     /**
-     * Retornem al menu de selecció d'idioma original
+     * Mètode que retorna al menu de selecció d'idioma original
      */
     private void volverAIdiomas() {
     	// Busca el JFrame a la finestra que conté el panell
@@ -196,7 +197,7 @@ public class MenuRetro extends JPanel {
     }
 
     /**
-     * Tanca el menu i obre la finestra del joc
+     * Mètode que tanca el menu i obre la finestra del joc
      */
     private void lanzarPantallaJuego() {
     	// Cerquem la finestra JFrame on esta el menu
@@ -222,7 +223,7 @@ public class MenuRetro extends JPanel {
     }
 
     /**
-     * Treballem tota la part visual, i cridem cada vegade que demanem a la visual.
+     * Mètode que treballa tota la part visual, i crida cada vegade que demana a la visual.
      * @param g, Objecte Graphics
      */
     @Override
