@@ -12,8 +12,8 @@ public class Utils {
 	
 	//afegir public final static que siguin comunes
 	//MIDA FINESTRA
-	public static final int WINDOW_WIDTH = 300;
-    public static final int WINDOW_HEIGHT = 400;
+	public static final int WINDOW_WIDTH = 400;
+    public static final int WINDOW_HEIGHT = 500;
     
     //LÓGICA DE JUEGO
     public static final int TIME_TO_LEVEL_UP = 20000; // 20 segundos
