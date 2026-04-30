@@ -88,6 +88,7 @@ public class NombreUsuarioMenu extends JPanel {
             }
         });
     }
+    
     /**
      * Mètode per tornar al menú principal
      */
