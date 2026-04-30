@@ -18,7 +18,7 @@ public class ControlLanguage {
 	final static String ANGLES = Utils.LANG_EN;
 	
 	//Emmagatzema el codi de l'idioma actiu en la instància
-	private String idiomaActual = "";
+	private String idiomaActual = Utils.LANG_EN;
 	
 	/**
     * Mètode mutador per definir l'idioma de treball.
@@ -52,6 +52,11 @@ public class ControlLanguage {
             case "cambiar_idioma": return "CANVIAR IDIOMA";
             case "sortir": return "SORTIR";
             case "guia_menu": return "Fletxes per navegar, ENTER per seleccionar";
+            case "game_over_titol": return "--- FI DE LA PARTIDA ---";
+            case "jugador": return "Jugador: ";
+            case "puntuacio": return "Puntuació: ";
+            case "ranking_titol": return "--- TOP 10 RÀNQUING ---";
+            case "tornar_jugar": return "Vols tornar a jugar?";
             default: return clau; // Si no troba la clau, retorna el nom de la clau
             }
         case CASTELLA: // Cas en què l'idioma actiu és el Castellà
@@ -67,6 +72,11 @@ public class ControlLanguage {
             case "cambiar_idioma": return "CAMBIAR IDIOMA";
             case "sortir": return "SALIR";
             case "guia_menu": return "Flechas para navegar, ENTER para seleccionar";
+            case "game_over_titol": return "--- JUEGO TERMINADO ---";
+            case "jugador": return "Jugador: ";
+            case "puntuacio": return "Puntuación: ";
+            case "ranking_titol": return "--- TOP 10 RANKING ---";
+            case "tornar_jugar": return "¿Quieres volver a jugar?";
             default: return clau;
             }
         default: // Idioma per defecte: English (s'executa si no és ni CAT ni ES
@@ -82,6 +92,11 @@ public class ControlLanguage {
             case "cambiar_idioma": return "CHANGE LANGUAGE";
             case "sortir": return "EXIT";
             case "guia_menu": return "ARROWS to navigate, ENTER to select";
+            case "game_over_titol": return "--- GAME OVER ---";
+            case "jugador": return "Player: ";
+            case "puntuacio": return "Score: ";
+            case "ranking_titol": return "--- TOP 10 RANKING ---";
+            case "tornar_jugar": return "Do you want to play again?";
             default: return clau;
             }
         }

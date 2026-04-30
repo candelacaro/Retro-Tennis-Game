@@ -417,61 +417,74 @@ public class Game extends JPanel {
 	}
 
 	/**
-	 * Mètode que controla quan la bola ha caigut i perds
+	 * Mètode que controla quan la bola ha caigut i perds.
+	 * Utilitza ControlLanguage i Utils per adaptar els textos a l'idioma seleccionat.
 	 */
 	public void gameOver() {
 
 		// Bloqueig de seguretat per evitar múltiples finestres de Game Over
 		if (gameEnded) {
 			return;
-
 		}
 
 		gameEnded = true;
 
-		//Aturar sons
+		// Aturar sons
 		sonido.stopFondo();
 		sonido.playGameOver();
+
+		// Creem la instància del traductor
+		minitennis.language.ControlLanguage ctrl = new minitennis.language.ControlLanguage();
+		
+		/* 
+		 * CONFIGURACIÓ DINÀMICA:
+		 * Passem l'idioma guardat a la classe Game (this.language).
+		 * Si és null, fem servir el valor per defecte de Utils.
+		 */
+		if (this.language == null) {
+			this.language = minitennis.utils.Utils.LANG_EN; 
+		}
+		ctrl.setIdiomaActual(this.language);
+
 		String rankingFinal = "";
 
 		// Guardar i obtenir rànquing automàticament
 		try {
-			Connexio c = new Connexio();
-
-			// Guardem i el mètode ens retorna el TOP 10 que genera el procediment
-			rankingFinal = c.guardarPartida(playerName, (int) score, language);
+			minitennis.db.Connexio c = new minitennis.db.Connexio();
+			// Passem l'idioma a la base de dades per si el rànquing també està traduït
+			rankingFinal = c.guardarPartida(playerName, (int) score, this.language);
 
 		} catch (Exception e) {
-
-			rankingFinal = "No s'ha pogut connectar amb la base de dades.";
-
+			rankingFinal = "Error de connexió.";
 		}
 
-		//Preparar el missatge per l'usuari
-		String missatge = "--- GAME OVER ---\n\n" +
-				"Jugador: " + playerName + "\n" +
-				"Puntuació: " + score + " ms\n\n" +
-				"--- TOP 10 RANKING ---\n" +
+		/* 
+		 * CONSTRUCCIÓ DEL MISSATGE SENSE TEXT FIX:
+		 * Cada part del text es demana al ctrl.get() segons l'idioma actiu.
+		 */
+		String missatge = ctrl.get("game_over_titol") + "\n\n" +
+				ctrl.get("nom_usuari") + " " + playerName + "\n" +
+				ctrl.get("puntuacio") + " " + score + " ms\n\n" +
+				ctrl.get("ranking_titol") + "\n" +
 				rankingFinal + "\n\n" +
-				"Vols tornar a jugar?";
+				ctrl.get("tornar_jugar");
 
 		/*
 		 * Mostrar finestra amb opcions (SÍ / NO)
-		 * Hem unificat la informació en un sol diàleg de confirmació per evitar bucles
-		 * residuals.
+		 * El títol de la finestra també és dinàmic.
 		 */
-		int resposta = JOptionPane.showConfirmDialog(this, missatge, "Fi de la partida",
-
-				JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+		int resposta = JOptionPane.showConfirmDialog(
+				this, 
+				missatge, 
+				ctrl.get("game_over_titol"), 
+				JOptionPane.YES_NO_OPTION, 
+				JOptionPane.INFORMATION_MESSAGE);
 
 		if (resposta == JOptionPane.YES_OPTION) {
-
 			reiniciarJoc();
-
 		} else {
 			System.exit(0);
 		}
-
 	}
 
 	/**
