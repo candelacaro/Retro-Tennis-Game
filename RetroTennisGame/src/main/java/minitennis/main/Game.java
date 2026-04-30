@@ -13,23 +13,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import javax.swing.ImageIcon;
+import javax.swing.Timer;
 import java.awt.Image;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities; 
 import minitennis.db.Connexio;
 import minitennis.objects.Ball;
 import minitennis.objects.Obstacle;
 import minitennis.objects.Racquet;
 import minitennis.sound.Sound;
 import minitennis.utils.Utils;
+import minitennis.language.ControlLanguage;
 
 /**
- * 
- * Classe Game que hereta de JPanel, funciona com a motor principal del joc.
+ * * Classe Game que hereta de JPanel, funciona com a motor principal del joc.
  * @author Candela Cabello, André Medinas, Izan Perez, Daner Coria i Adrià Chenovart
- * 
- */
+ * */
 
 public class Game extends JPanel {
 
@@ -69,20 +70,26 @@ public class Game extends JPanel {
 	private final int FONS_DISPONIBLES = 6;
 	private Image[] fondos = new Image[FONS_DISPONIBLES];
 
-	// Variable per controlar que el joc s'aturi quan perds
+	// Variable de control per assegurar que el bucle del joc s'aturi realment
 	private boolean gameEnded = false;
+	
+	// Variable per guardar la referència del Timer del joc perquè es pugui detenir
+	private Timer gameTimer = null;
 
 	/**
 	 * Constructor del joc. Inicialitza components i escoltadors d'entrada.
 	 * @param playerName,    nom del jugador
 	 * @param selectedLevel, nivell inicial seleccionat
-	 * 
-	 */
+	 * */
 	public Game(String playerName, int selectedLevel, String language) {
 
+		// IMPORTANT: Reiniciem l'estat de control per si venim d'una partida anterior
+		this.gameEnded = false; 
+		
 		this.playerName = playerName;
 		this.language = language;
 		Game.level = selectedLevel;
+		
 		Ball primeraBola = new Ball(this);
 
 		//Declaració i incialització de variable que calcula la velocitat dinàmica de la pilota
@@ -140,8 +147,7 @@ public class Game extends JPanel {
 
 			}
 
-			/** 
-			 * Mètode que s'executa quan l'usuari deixa anar la tecla. Indica a la raqueta
+			/** * Mètode que s'executa quan l'usuari deixa anar la tecla. Indica a la raqueta
 			 * (racquet.keyReleased(e)) que s'ha d'aturar.
 			 */
 			public void keyReleased(KeyEvent e) {
@@ -225,11 +231,10 @@ public class Game extends JPanel {
 
 	/**
 	 * Mètode que executa tota la lògica de moviment del frame actual
-	 * 
-	 */
+	 * */
 	public void move() {
 
-		// Verifiquem si el joc ha acabat per aturar la lògica
+		// Si el joc ha acabat, ignorem qualsevol càlcul de moviment residual
 		if (gameEnded) {
 			return;
 		}
@@ -281,11 +286,9 @@ public class Game extends JPanel {
 	}
 
 	/**
-	 * 
-	 * Mètode principal de renderització del component.
+	 * * Mètode principal de renderització del component.
 	 * @param g, Objecte Graphics que permet realitzar operacions de dibuix.
-	 * 
-	 */
+	 * */
 	@Override
 	protected void paintComponent(Graphics g) {
 
@@ -417,94 +420,101 @@ public class Game extends JPanel {
 	}
 
 	/**
-	 * Mètode que controla quan la bola ha caigut i perds.
-	 * Utilitza ControlLanguage i Utils per adaptar els textos a l'idioma seleccionat.
+	 * Mètode que gestiona el final de la partida.
+	 * Es crida quan la bola toca el fons de la pantalla.
 	 */
 	public void gameOver() {
+	    // 1. Bloqueig de seguretat: evitem que el diàleg surti 2 cops si la bola rebota al fons
+	    if (gameEnded) {
+	        return;
+	    }
+	    gameEnded = true;
 
-		// Bloqueig de seguretat per evitar múltiples finestres de Game Over
-		if (gameEnded) {
-			return;
-		}
+	    // 2. Aturem sons i posem el de derrota
+	    sonido.stopFondo();
+	    sonido.playGameOver();
 
-		gameEnded = true;
+	    // 3. Inicialitzem el sistema de traducció
+	    ControlLanguage ctrl = new ControlLanguage();
+	    
+	    // Fem servir la variable 'language' que hem rebut al constructor de Game.java
+	    // Si per algun motiu fos null, posem l'anglès ("EN") per defecte.
+	    String langPartida = (this.language != null) ? this.language : "EN";
+	    ctrl.setIdiomaActual(langPartida);
 
-		// Aturar sons
-		sonido.stopFondo();
-		sonido.playGameOver();
+	    // Guardem la puntuació i obtenim el text del Ranking
+	    String rankingFinal = "";
+	    try {
+	        Connexio c = new Connexio();
+	        // Li passem el nom, la puntuació (score) i l'idioma per a la DB
+	        rankingFinal = c.guardarPartida(playerName, (int) score, langPartida);
+	    } catch (Exception e) {
+	        rankingFinal = "Error loading ranking...";
+	    }
 
-		// Creem la instància del traductor
-		minitennis.language.ControlLanguage ctrl = new minitennis.language.ControlLanguage();
-		
-		/* 
-		 * CONFIGURACIÓ DINÀMICA:
-		 * Passem l'idioma guardat a la classe Game (this.language).
-		 * Si és null, fem servir el valor per defecte de Utils.
-		 */
-		if (this.language == null) {
-			this.language = minitennis.utils.Utils.LANG_EN; 
-		}
-		ctrl.setIdiomaActual(this.language);
+	    // 5. Muntem el missatge final combinant les dades de la partida amb les traduccions
+	    String missatge = "--- " + ctrl.get("game_over_titol") + " ---\n\n" +
+	                      ctrl.get("jugador") + ": " + playerName + "\n" +
+	                      ctrl.get("puntuacio") + ": " + (int)score + " ms\n\n" +
+	                      ctrl.get("ranking_titol") + "\n" +
+	                      rankingFinal + "\n\n" +
+	                      ctrl.get("tornar_jugar");
 
-		String rankingFinal = "";
+	    // 6. Mostrem el quadre de text (JOptionPane)
+	    // Utilitzem 'this' per centrar-lo sobre el joc i el títol traduït
+	    int resposta = JOptionPane.showConfirmDialog(
+	        this, 
+	        missatge, 
+	        ctrl.get("game_over_titol"), 
+	        JOptionPane.YES_NO_OPTION,
+	        JOptionPane.INFORMATION_MESSAGE
+	    );
 
-		// Guardar i obtenir rànquing automàticament
-		try {
-			minitennis.db.Connexio c = new minitennis.db.Connexio();
-			// Passem l'idioma a la base de dades per si el rànquing també està traduït
-			rankingFinal = c.guardarPartida(playerName, (int) score, this.language);
-
-		} catch (Exception e) {
-			rankingFinal = "Error de connexió.";
-		}
-
-		/* 
-		 * CONSTRUCCIÓ DEL MISSATGE SENSE TEXT FIX:
-		 * Cada part del text es demana al ctrl.get() segons l'idioma actiu.
-		 */
-		String missatge = ctrl.get("game_over_titol") + "\n\n" +
-				ctrl.get("nom_usuari") + " " + playerName + "\n" +
-				ctrl.get("puntuacio") + " " + score + " ms\n\n" +
-				ctrl.get("ranking_titol") + "\n" +
-				rankingFinal + "\n\n" +
-				ctrl.get("tornar_jugar");
-
-		/*
-		 * Mostrar finestra amb opcions (SÍ / NO)
-		 * El títol de la finestra també és dinàmic.
-		 */
-		int resposta = JOptionPane.showConfirmDialog(
-				this, 
-				missatge, 
-				ctrl.get("game_over_titol"), 
-				JOptionPane.YES_NO_OPTION, 
-				JOptionPane.INFORMATION_MESSAGE);
-
-		if (resposta == JOptionPane.YES_OPTION) {
-			reiniciarJoc();
-		} else {
-			System.exit(0);
-		}
+	    // 7. Lògica de decisió de l'usuari
+	    if (resposta == JOptionPane.YES_OPTION) {
+	        // L'usuari vol jugar: executem el reinici net
+	        reiniciarJoc();
+	    } else {
+	        // L'usuari vol sortir: tanquem el programa
+	        System.exit(0);
+	    }
 	}
 
 	/**
-	 * Mètode privat per reiniciar el flux de l'aplicació des de l'inici.
+	 * Mètode que tanca la finestra actual i reinicia tot el flux des del principi.
+	 * Això garanteix que el joc torni a ser jugable i no quedin restes de la partida anterior.
 	 */
 	private void reiniciarJoc() {
+	    // A) Detenim el Timer del joc si existeix para evitar que segueixi executant-se
+	    if (gameTimer != null && gameTimer.isRunning()) {
+	        gameTimer.stop();
+	    }
+	    
+	    // B) Obtenim el JFrame (la finestra) que conté aquest JPanel (el joc)
+	    javax.swing.JFrame topFrame = (javax.swing.JFrame) javax.swing.SwingUtilities.getWindowAncestor(this);
+	    
+	    if (topFrame != null) {
+	        // C) Tanquem i destruïm la finestra actual per alliberar memòria i fils d'execució
+	        topFrame.dispose(); 
+	    }
 
-		// Obtenim la finestra (JFrame) que conté aquest panell (Game)
-		JFrame topFrame = (JFrame) javax.swing.SwingUtilities.getWindowAncestor(this);
+	    // D) Tornem a llançar el menú inicial
+	    // Fem servir 'invokeLater' per assegurar-nos que la nova finestra s'obre 
+	    // quan la vella ja s'hagi tancat completament (evita conflictes de focus)
+	    javax.swing.SwingUtilities.invokeLater(() -> {
+	        InitialWindow menu = new InitialWindow();
+	        // Això obrirà la finestra de selecció d'idioma/nom com al principi
+	        menu.mostrarMenu(); 
+	    });
+	}
 
-		if (topFrame != null) {
-			// Tanquem la finestra actual del joc
-			topFrame.dispose(); 
-
-		}
-
-		// Tornem a obrir el menú inicial
-		InitialWindow inicial = new InitialWindow();
-		inicial.mostrarMenu();
-
+	/**
+	 * Setter per assignar el Timer del joc.
+	 * Això permet que el Timer sigui detingut quan el joc acaba.
+	 * @param timer el Timer del joc
+	 */
+	public void setGameTimer(Timer timer) {
+	    this.gameTimer = timer;
 	}
 
 	/**

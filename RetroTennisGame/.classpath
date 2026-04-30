@@ -37,5 +37,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="llibreria/mysql-connector-java-8.0.28.jar"/>
+	<classpathentry kind="var" path="JRE_LIB"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

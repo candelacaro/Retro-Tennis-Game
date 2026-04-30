@@ -1,6 +1,7 @@
 package minitennis.menu;
 
 import javax.swing.*;
+import javax.swing.Timer;
 
 import minitennis.language.ControlLanguage;
 import minitennis.main.Game;
@@ -134,8 +135,8 @@ public class NombreUsuarioMenu extends JPanel {
         frame.dispose(); 
         // Obre la finestra de joc
         JFrame gameFrame = new JFrame("Retro Tenis - " + nom);
-        // Crea el component del joc amb els parametres
-        Game game = new Game(nom, niv, null);
+        // Crea el component del joc amb els parametres - CORREGIT: Pasem el idioma actual
+        Game game = new Game(nom, niv, controlLang.getIdiomaActual());
         // Afegim el joc dins de la finestra
         gameFrame.add(game);
         // Definim la seva mida
@@ -147,13 +148,17 @@ public class NombreUsuarioMenu extends JPanel {
         // Fem visible la finestra
         gameFrame.setVisible(true);
         // Creem un temporitzador per executar el bucle de 100 vegades per segon
-        new Timer(10, e -> {
+        // CORREGIT: Guardem referència al Timer per poder-lo detenir més tard
+        Timer gameTimer = new Timer(10, e -> {
         	// Actualitza la posició de la pilot i raqueta
             game.move();
             // Dibuixa els nous moviments
             game.repaint();
             // Comença el temporitzador
-        }).start();
+        });
+        // Passem el Timer al joc perquè el pugui detenir quan acabi
+        game.setGameTimer(gameTimer);
+        gameTimer.start();
         // Activa el teclat per poder jugar
         game.requestFocusInWindow();
     }

@@ -82,10 +82,10 @@ public class LanguageSelectionMenu extends JPanel {
         if (seleccion == ANGLES) {
         		cl.setIdiomaActual(ControlLanguage.ANGLES);
         }
-        else if (seleccion == CASTELLA) {
+        if (seleccion == CASTELLA) {
         		cl.setIdiomaActual(ControlLanguage.CASTELLA);
         }
-        else if (seleccion == CATALA) {
+        if (seleccion == CATALA) {
         		cl.setIdiomaActual(ControlLanguage.CATALA);
         }
         // Localitzem la finestra on es troba aquest panell
